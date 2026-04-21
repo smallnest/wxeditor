@@ -578,6 +578,7 @@
       if (frame) frame.style.width = '';
       if (label) label.textContent = '预览区域（手机预览 · 375px）';
     }
+    renderPreview();
     save();
   }
 
@@ -1109,6 +1110,36 @@
     toast('🎲 风格已随机');
   }
 
+  // ============ 外链转脚注 ============
+  function linksToFootnotes(md) {
+    const links = [];
+    let idx = 0;
+    // 用占位符先保护图片语法 ![...](...)
+    const imgPlaceholders = [];
+    let protectedMd = md.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match) => {
+      const placeholder = `__IMG_PROTECT_${imgPlaceholders.length}__`;
+      imgPlaceholders.push(match);
+      return placeholder;
+    });
+    const result = protectedMd.replace(/\[([^\]]*)\]\(([^)]+)\)/g, (match, text, href) => {
+      idx++;
+      links.push({ idx, text, href });
+      return `${text}[^${idx}]`;
+    });
+    // 还原图片
+    let finalResult = result;
+    imgPlaceholders.forEach((img, i) => {
+      finalResult = finalResult.replace(`__IMG_PROTECT_${i}__`, img);
+    });
+    if (links.length === 0) {
+      toast('未发现链接');
+      return md;
+    }
+    const footnotes = links.map(l => `- [^${l.idx}]: ${l.text} ${l.href}`).join('\n');
+    toast(`✓ 已转换 ${links.length} 个链接为脚注`);
+    return finalResult + '\n\n---\n\n' + footnotes;
+  }
+
   // ============ 样式面板 ============
   function buildSettingsPanel() {
     const root = document.getElementById('settings-body');
@@ -1506,6 +1537,12 @@
     document.getElementById('btn-copy-html').addEventListener('click', copyHTML);
     document.getElementById('btn-rand-color').addEventListener('click', randomizeColors);
     document.getElementById('btn-rand-style').addEventListener('click', randomizeStyle);
+    document.getElementById('btn-links-footnote').addEventListener('click', () => {
+      const ed = document.getElementById('editor');
+      state.md = linksToFootnotes(state.md);
+      ed.value = state.md;
+      renderPreview();
+    });
     document.getElementById('btn-reset').addEventListener('click', () => {
       if (confirm('重置为暖棕书卷主题？自定义主题不会被删除。')) {
         localStorage.clear();
