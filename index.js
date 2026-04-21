@@ -366,6 +366,10 @@
     }
     const box = document.getElementById('preview-content');
     if (box) box.innerHTML = html;
+    if (state.editorPaneCollapsed) {
+      const section = box ? box.querySelector(':scope > section') : null;
+      if (section) section.style.maxWidth = '900px';
+    }
     applyPreviewBg();
     updateMeta();
     save();
@@ -557,6 +561,8 @@
     state.editorPaneCollapsed = collapsed;
     const main = document.querySelector('.main');
     const toggle = document.getElementById('editor-toggle');
+    const frame = document.querySelector('.preview-frame');
+    const label = document.getElementById('preview-mode-label');
     if (main) {
       main.classList.toggle('editor-collapsed', collapsed);
     }
@@ -564,6 +570,13 @@
       toggle.setAttribute('aria-expanded', String(!collapsed));
       toggle.setAttribute('aria-label', collapsed ? '展开编辑区域' : '折叠编辑区域');
       toggle.textContent = '◂';
+    }
+    if (collapsed) {
+      if (frame) frame.style.width = '1024px';
+      if (label) label.textContent = '预览区域（网页预览 · 1024px）';
+    } else {
+      if (frame) frame.style.width = '';
+      if (label) label.textContent = '预览区域（手机预览 · 375px）';
     }
     save();
   }
