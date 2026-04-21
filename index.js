@@ -1530,6 +1530,70 @@
     return box;
   }
 
+  // ============ 格式化 Markdown ============
+  function formatMarkdown(md) {
+    if (!md || !md.trim()) return md;
+    const lines = md.split('\n');
+    const result = [];
+    let inCodeBlock = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      // 跟踪代码块状态
+      if (/^```/.test(line.trimStart())) {
+        inCodeBlock = !inCodeBlock;
+        result.push(line);
+        continue;
+      }
+      if (inCodeBlock) {
+        result.push(line);
+        continue;
+      }
+
+      result.push(line);
+    }
+
+    // 重新拼接后进行整体格式化
+    let formatted = result.join('\n');
+
+    // 1. 标题前确保空行（文件开头除外）
+    formatted = formatted.replace(/([^\n])\n(#{1,6}\s)/g, '$1\n\n$2');
+
+    // 2. 标题后确保空行
+    formatted = formatted.replace(/(#{1,6}\s.*)\n([^\n#])/g, '$1\n\n$2');
+
+    // 3. 代码块前后确保空行
+    formatted = formatted.replace(/([^\n])\n(```)/g, '$1\n\n$2');
+    formatted = formatted.replace(/(```.*\n(?:[^`]|`(?!``))*)\n```(\n[^\n])/g, '$1\n```\n$2');
+
+    // 4. 列表前后确保空行（非列表行 → 列表行）
+    formatted = formatted.replace(/([^\n])\n(\s*[-*+]\s)/g, '$1\n\n$2');
+    formatted = formatted.replace(/([^\n])\n(\s*\d+\.\s)/g, '$1\n\n$2');
+
+    // 5. 引用块前后确保空行
+    formatted = formatted.replace(/([^\n])\n(>\s)/g, '$1\n\n$2');
+
+    // 6. 分割线前后确保空行
+    formatted = formatted.replace(/([^\n])\n((?:---|\*\*\*|___)\s*$)/gm, '$1\n\n$2');
+    formatted = formatted.replace(/((?:---|\*\*\*|___)\s*$)\n([^\n])/gm, '$1\n\n$2');
+
+    // 7. 表格前后确保空行
+    formatted = formatted.replace(/([^\n|])\n(\|)/g, '$1\n\n$2');
+    formatted = formatted.replace(/(\|.*\|)\n([^\n|])/g, '$1\n\n$2');
+
+    // 8. 去除多余连续空行（最多保留两个换行）
+    formatted = formatted.replace(/\n{3,}/g, '\n\n');
+
+    // 9. 去除行尾空白
+    formatted = formatted.split('\n').map(l => l.trimEnd()).join('\n');
+
+    // 10. 去除文件开头空行
+    formatted = formatted.replace(/^\n+/, '');
+
+    return formatted;
+  }
+
   // ============ 绑定顶栏 ============
   function bindTopbar() {
     document.getElementById('theme-select').addEventListener('change', e => applyTheme(e.target.value));
@@ -1542,6 +1606,13 @@
       state.md = linksToFootnotes(state.md);
       ed.value = state.md;
       renderPreview();
+    });
+    document.getElementById('btn-format').addEventListener('click', () => {
+      const ed = document.getElementById('editor');
+      state.md = formatMarkdown(state.md);
+      ed.value = state.md;
+      renderPreview();
+      toast('✓ 已格式化');
     });
     document.getElementById('btn-reset').addEventListener('click', () => {
       if (confirm('重置为暖棕书卷主题？自定义主题不会被删除。')) {
