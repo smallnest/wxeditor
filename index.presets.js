@@ -54,6 +54,7 @@ window.PRESETS = {
     { id: 'svg-leaf',      name: '枝叶装饰', style: 'text-align:center; font-size:{fs}px; font-weight:700; color:{c}; margin:28px 0 20px; padding:8px 0; line-height:1.4;', svgBefore: 'leaf-branch', svgAfter: 'leaf-underline' },
     { id: 'svg-sakura',    name: '樱花装饰', style: 'text-align:center; font-size:{fs}px; font-weight:700; color:{c}; margin:28px 0 20px; padding:8px 0; line-height:1.4;', svgBefore: 'sakura-top', svgAfter: 'sakura-bottom' },
     { id: 'svg-sakura-banner', name: '樱花题图', style: 'text-align:center; font-size:{fs}px; font-weight:700; color:{c}; margin:0 0 20px; padding:48px 20px 16px; line-height:1.4; min-height:120px; border-radius:8px;', svgBefore: 'sakura-banner' },
+    { id: 'svg-willow-banner', name: '柳条题图', style: 'text-align:center; font-size:{fs}px; font-weight:700; color:{c}; margin:0 0 20px; padding:48px 20px 16px; line-height:1.4; min-height:120px; border-radius:8px;', svgBefore: 'willow-banner' },
   ],
 
   // ============ H2 ============
@@ -1845,7 +1846,7 @@ window.THEMES = {
   spring: {
     name: '春意盎然',
     global: { bg: '#FFFFFF', ink: '#3D3D3D', brand: '#5B9A4D', brandSoft: '#EFF8EC', fontFamily: 'sans-zh', maxWidth: 340 },
-    h1: { preset: 'svg-leaf', color: '#3D7A2A', fontSize: 22 },
+    h1: { preset: 'svg-willow-banner', color: '#3D7A2A', fontSize: 22 },
     h2: { preset: 'svg-leaf-h2', color: '#4E8C3F', fontSize: 19 },
     h3: { preset: 'svg-leaf-h3', color: '#5B9A4D', fontSize: 17 },
     h4: { preset: 'svg-minidot', color: '#6AAA58', fontSize: 16 },
