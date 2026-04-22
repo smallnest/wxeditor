@@ -51,6 +51,9 @@ window.PRESETS = {
     { id: 'svg-brackets', name: '尖括号线', style: 'text-align:center; font-size:{fs}px; font-weight:700; color:{c}; margin:28px 0 20px; padding:8px 0; line-height:1.4;', svgAfter: 'brackets-line' },
     { id: 'svg-starburst',name: '星芒装饰', style: 'text-align:center; font-size:{fs}px; font-weight:700; color:{c}; margin:28px 0 20px; line-height:1.4;', svgBefore: 'starburst' },
     { id: 'svg-dbdiamond',name: '双菱形', style: 'text-align:center; font-size:{fs}px; font-weight:700; color:{c}; margin:28px 0 20px; line-height:1.4;', svgBefore: 'double-diamond' },
+    { id: 'svg-leaf',      name: '枝叶装饰', style: 'text-align:center; font-size:{fs}px; font-weight:700; color:{c}; margin:28px 0 20px; padding:8px 0; line-height:1.4;', svgBefore: 'leaf-branch', svgAfter: 'leaf-underline' },
+    { id: 'svg-sakura',    name: '樱花装饰', style: 'text-align:center; font-size:{fs}px; font-weight:700; color:{c}; margin:28px 0 20px; padding:8px 0; line-height:1.4;', svgBefore: 'sakura-top', svgAfter: 'sakura-bottom' },
+    { id: 'svg-sakura-banner', name: '樱花题图', style: 'text-align:center; font-size:{fs}px; font-weight:700; color:{c}; margin:0 0 20px; padding:48px 20px 16px; line-height:1.4; min-height:120px; border-radius:8px;', svgBefore: 'sakura-banner' },
   ],
 
   // ============ H2 ============
@@ -83,6 +86,8 @@ window.PRESETS = {
     { id: 'svg-rocket',   name: '火箭标记', style: 'font-size:{fs}px; font-weight:700; color:{c}; margin:28px 0 16px; display:flex; align-items:center; gap:8px; line-height:1.45;', svgBefore: 'rocket' },
     { id: 'svg-neonline', name: '霓虹底线', style: 'font-size:{fs}px; font-weight:700; color:{c}; margin:28px 0 16px; padding-bottom:6px; line-height:1.45;', svgAfter: 'neon-line' },
     { id: 'svg-sparkline',name: '星点底线', style: 'font-size:{fs}px; font-weight:700; color:{c}; margin:28px 0 16px; padding-bottom:6px; line-height:1.45;', svgAfter: 'sparkle-line' },
+    { id: 'svg-leaf-h2',  name: '树叶标记', style: 'font-size:{fs}px; font-weight:700; color:{c}; margin:28px 0 16px; display:flex; align-items:center; gap:8px; line-height:1.45;', svgBefore: 'leaf-icon' },
+    { id: 'svg-sakura-h2',name: '樱花标记', style: 'font-size:{fs}px; font-weight:700; color:{c}; margin:28px 0 16px; display:flex; align-items:center; gap:8px; line-height:1.45;', svgBefore: 'sakura-icon' },
   ],
 
   // ============ H3 ============
@@ -110,6 +115,8 @@ window.PRESETS = {
     { id: 'svg-dashwave',name: '虚线波浪', style: 'font-size:{fs}px; font-weight:600; color:{c}; margin:22px 0 14px; padding-bottom:4px; line-height:1.5;', svgAfter: 'dash-wave' },
     { id: 'svg-dottail', name: '点尾线', style: 'font-size:{fs}px; font-weight:600; color:{c}; margin:22px 0 14px; padding-bottom:4px; line-height:1.5;', svgAfter: 'dot-trail' },
     { id: 'svg-brkmark', name: '括号标记', style: 'font-size:{fs}px; font-weight:600; color:{c}; margin:22px 0 12px; display:flex; align-items:center; gap:4px; line-height:1.5;', svgBefore: 'bracket-mark' },
+    { id: 'svg-leaf-h3',  name: '树叶标记', style: 'font-size:{fs}px; font-weight:600; color:{c}; margin:22px 0 12px; display:flex; align-items:center; gap:6px; line-height:1.5;', svgBefore: 'leaf-icon' },
+    { id: 'svg-sakura-h3',name: '樱花标记', style: 'font-size:{fs}px; font-weight:600; color:{c}; margin:22px 0 12px; padding-bottom:4px; line-height:1.5;', svgAfter: 'sakura-line' },
   ],
 
   // ============ H4 ============
@@ -201,6 +208,7 @@ window.PRESETS = {
     { id: 'heart',       name: '爱心', marker: '♥', style: 'color:{c};' },
     { id: 'flower',      name: '花饰', marker: '❋', style: 'color:{c};' },
     { id: 'rightpoint',  name: '右三角', marker: '▶', style: 'color:{c};' },
+    { id: 'leafmarker',  name: '绿叶', marker: '🍃', style: 'color:{c};' },
   ],
 
   // ============ 有序列表 ol ============
@@ -1831,5 +1839,49 @@ window.THEMES = {
     table: { preset: 'softbg', color: '#07C160', bgColor: '#DCF5E2' },
     bold: { color: '#3E3E3E' },
     italic: { color: '#888888' },
+  },
+
+  // ── 春意：清新绿意、植物装饰、自然通透 ──
+  spring: {
+    name: '春意盎然',
+    global: { bg: '#FFFFFF', ink: '#3D3D3D', brand: '#5B9A4D', brandSoft: '#EFF8EC', fontFamily: 'sans-zh', maxWidth: 340 },
+    h1: { preset: 'svg-leaf', color: '#3D7A2A', fontSize: 22 },
+    h2: { preset: 'svg-leaf-h2', color: '#4E8C3F', fontSize: 19 },
+    h3: { preset: 'svg-leaf-h3', color: '#5B9A4D', fontSize: 17 },
+    h4: { preset: 'svg-minidot', color: '#6AAA58', fontSize: 16 },
+    p:  { preset: 'normal', color: '#555555', fontSize: 15, lineHeight: 1.8, letterSpacing: 0.5 },
+    blockquote: { preset: 'card', color: '#5B9A4D', textColor: '#4A7A3B', bgColor: '#F2F9F0', fontSize: 14 },
+    pre: { preset: 'subtle-border' },
+    code: { preset: 'pill-soft', color: '#5B9A4D', bgColor: '#EFF8EC' },
+    ul: { preset: 'leafmarker', color: '#5B9A4D' },
+    ol: { preset: 'circled', color: '#5B9A4D' },
+    a: { preset: 'underline', color: '#4E8C3F' },
+    img: { preset: 'bigrounded' },
+    hr: { preset: 'three-dots', color: '#8DC08A' },
+    table: { preset: 'softbg', color: '#5B9A4D', bgColor: '#EFF8EC' },
+    bold: { color: '#3D3D3D' },
+    italic: { color: '#888888' },
+  },
+
+  // ── 樱花：粉色浪漫、花瓣飘落、古典柔美 ──
+  sakura: {
+    name: '樱花漫舞',
+    global: { bg: '#FFF7F9', ink: '#3D3D3D', brand: '#E07A8E', brandSoft: '#FDEEF1', fontFamily: 'kaiti', maxWidth: 340 },
+    h1: { preset: 'svg-sakura-banner', color: '#D4687A', fontSize: 22 },
+    h2: { preset: 'svg-sakura-h2', color: '#D4687A', fontSize: 19 },
+    h3: { preset: 'svg-sakura-h3', color: '#E07A8E', fontSize: 17 },
+    h4: { preset: 'svg-minidot', color: '#C5A065', fontSize: 16 },
+    p:  { preset: 'normal', color: '#4A4A4A', fontSize: 15, lineHeight: 1.85, letterSpacing: 0.5 },
+    blockquote: { preset: 'card', color: '#E07A8E', textColor: '#6B5B5E', bgColor: '#FFF0F3', fontSize: 14 },
+    pre: { preset: 'subtle-border' },
+    code: { preset: 'pill-soft', color: '#D4687A', bgColor: '#FDEEF1' },
+    ul: { preset: 'flower', color: '#E07A8E' },
+    ol: { preset: 'circled', color: '#D4687A' },
+    a: { preset: 'underline', color: '#C5A065' },
+    img: { preset: 'bigrounded' },
+    hr: { preset: 'three-dots', color: '#E8A0AF' },
+    table: { preset: 'softbg', color: '#E07A8E', bgColor: '#FFF0F3' },
+    bold: { color: '#D4687A' },
+    italic: { color: '#999999' },
   },
 };
