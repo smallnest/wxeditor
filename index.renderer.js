@@ -270,9 +270,9 @@
     // --- 代码块（highlight.js 着色，失败则纯文本转义） ---
     renderer.code = function (code, lang) {
       const { style } = buildPre(settings.pre);
-      // 浅色底放在末尾，覆盖预设里可能出现的深色 background，复制到公众号也一致
-      const lightShell = 'background:#f5f7fa;border:1px solid #e2e8f0;color:#1e293b;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;overflow-x:hidden';
-      const preStyle = `${style};${lightShell}`;
+      // 只补齐换行与溢出行为，不覆盖预设自带的背景、边框、文字色
+      const shellBehavior = 'white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;overflow-x:hidden';
+      const preStyle = `${style};${shellBehavior}`;
       const esc = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       let inner = esc;
       if (typeof hljs !== 'undefined' && hljs.highlight) {

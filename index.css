@@ -354,18 +354,15 @@ body {
   background: #f8fafc;
 }
 
-/* 预览区代码块：统一浅色底（公众号阅读友好；覆盖暗色 pre 预设与 hljs 冲突） */
+/* 预览区代码块：容器外观交给 pre 预设，CSS 仅兜底换行与溢出行为 */
 #preview-content pre {
-  background: #f5f7fa !important;
-  border: 1px solid #e2e8f0 !important;
-  color: #1e293b !important;
   white-space: pre-wrap !important;
   word-break: break-word !important;
   overflow-wrap: anywhere !important;
   overflow-x: hidden !important;
 }
 
-/* 预览区内代码高亮（github 主题 token 色叠在浅色底上） */
+/* 预览区内代码高亮：保留 highlight.js token 色，但不抢容器背景 */
 #preview-content pre code.hljs {
   display: block;
   overflow-x: visible !important;
@@ -373,6 +370,8 @@ body {
   word-break: break-word !important;
   overflow-wrap: anywhere !important;
   background: transparent !important;
+  color: inherit !important;
+  border: none !important;
 }
 
 #editor {
