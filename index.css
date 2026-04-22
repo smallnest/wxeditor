@@ -84,6 +84,14 @@ body {
 .topbar-left .select-theme select {
   padding: 2px 2px;
 }
+#theme-select {
+  min-width: 108px;
+}
+#code-theme-select {
+  width: 132px;
+  min-width: 132px;
+  max-width: 132px;
+}
 .topbar-left .btn.ghost {
   padding: 5px 8px;
   gap: 4px;

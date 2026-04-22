@@ -4,10 +4,19 @@
   <title>Markdown 编辑器</title>
   <meta name="viewport" content="width=1280">
   <link rel="stylesheet" href="index.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css">
+  <link rel="stylesheet" id="hljs-theme-link" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css">
   <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/turndown@7.2.0/dist/turndown.js"></script>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?02b13b20aaf4999e8a861642bcc0f39f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
   
 </head>
 <body>
@@ -28,6 +37,10 @@
       <div class="select-theme">
         <span style="color:var(--ink-faint); font-size:11.5px;">主题</span>
         <select id="theme-select"></select>
+      </div>
+      <div class="select-theme">
+        <span style="color:var(--ink-faint); font-size:11.5px;">代码主题</span>
+        <select id="code-theme-select"></select>
       </div>
 
       <button class="btn ghost" id="btn-rand-color" title="随机色系">
