@@ -92,6 +92,11 @@ body {
   min-width: 132px;
   max-width: 132px;
 }
+#image-copy-mode-select {
+  width: 116px;
+  min-width: 116px;
+  max-width: 116px;
+}
 .topbar-left .btn.ghost {
   padding: 5px 8px;
   gap: 4px;
