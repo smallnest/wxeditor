@@ -25,6 +25,42 @@
     return String(tpl).replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
   }
 
+  // ============ SVG 装饰片段 ============
+  // 每个 key 返回一段 HTML（通常是 <svg>），接收 {c} 主色、{cbg} 柔色
+  const SVG_DECO = {
+    // ── H1 ──
+    'ribbon': (c) => `<span style="display:block;position:absolute;left:-8px;top:0;bottom:0;width:8px;"><svg width="8" height="100%" viewBox="0 0 8 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 8,0 8,40 0,40 4,34" fill="${c}" opacity="0.6"/></svg></span><span style="display:block;position:absolute;right:-8px;top:0;bottom:0;width:8px;"><svg width="8" height="100%" viewBox="0 0 8 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 8,0 4,34 8,40 0,40" fill="${c}" opacity="0.6"/></svg></span>`,
+    'gradbar': (c) => `<span style="position:absolute;left:0;top:2px;bottom:2px;width:5px;border-radius:3px;overflow:hidden;"><svg width="5" height="100%" viewBox="0 0 5 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${c}"/><stop offset="100%" stop-color="${c}" stop-opacity="0.3"/></linearGradient></defs><rect width="5" height="40" fill="url(#gb)"/></svg></span>`,
+    'dots': (c, cbg) => `<span style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;opacity:0.15;border-radius:8px;"><svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="dp" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.5" fill="${c}"/></pattern></defs><rect width="100%" height="100%" fill="url(#dp)"/></svg></span>`,
+    'flower-top': (c) => `<span style="display:block;text-align:center;margin-bottom:4px;"><svg width="120" height="16" viewBox="0 0 120 16" xmlns="http://www.w3.org/2000/svg"><path d="M10 8 Q20 0 30 8 Q40 16 50 8 Q60 0 70 8 Q80 16 90 8 Q100 0 110 8" stroke="${c}" stroke-width="1.5" fill="none" opacity="0.5"/><circle cx="10" cy="8" r="2.5" fill="${c}" opacity="0.6"/><circle cx="60" cy="8" r="2.5" fill="${c}" opacity="0.6"/><circle cx="110" cy="8" r="2.5" fill="${c}" opacity="0.6"/></svg></span>`,
+    'flower-bottom': (c) => `<span style="display:block;text-align:center;margin-top:4px;"><svg width="120" height="16" viewBox="0 0 120 16" xmlns="http://www.w3.org/2000/svg"><path d="M10 8 Q20 16 30 8 Q40 0 50 8 Q60 16 70 8 Q80 0 90 8 Q100 16 110 8" stroke="${c}" stroke-width="1.5" fill="none" opacity="0.5"/><circle cx="10" cy="8" r="2.5" fill="${c}" opacity="0.6"/><circle cx="60" cy="8" r="2.5" fill="${c}" opacity="0.6"/><circle cx="110" cy="8" r="2.5" fill="${c}" opacity="0.6"/></svg></span>`,
+    'frame': (c) => `<span style="position:absolute;inset:0;pointer-events:none;"><svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;"><rect x="4" y="4" width="calc(100% - 8px)" height="calc(100% - 8px)" rx="4" fill="none" stroke="${c}" stroke-width="1" opacity="0.3" stroke-dasharray="6 3"/><rect x="0" y="0" width="10" height="10" fill="${c}" opacity="0.15"/><rect x="calc(100% - 10px)" y="0" width="10" height="10" fill="${c}" opacity="0.15"/><rect x="0" y="calc(100% - 10px)" width="10" height="10" fill="${c}" opacity="0.15"/><rect x="calc(100% - 10px)" y="calc(100% - 10px)" width="10" height="10" fill="${c}" opacity="0.15"/></svg></span>`,
+    'gradient-fill': (c) => ``,
+    'pen-underline': (c) => `<span style="display:block;text-align:center;"><svg width="140" height="12" viewBox="0 0 140 12" xmlns="http://www.w3.org/2000/svg"><path d="M4 6 Q30 2 70 6 Q110 10 136 6" stroke="${c}" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/><line x1="126" y1="2" x2="136" y2="10" stroke="${c}" stroke-width="1.5" opacity="0.4"/></svg></span>`,
+    'corner-l': (c) => `<span style="position:absolute;inset:0;pointer-events:none;"><svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;"><path d="M2 28 L2 2 L28 2" stroke="${c}" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="Mcalc(100% - 28px) calc(100% - 2px) Lcalc(100% - 2px) calc(100% - 2px) Lcalc(100% - 2px) calc(100% - 28px)" stroke="${c}" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></span>`,
+    // ── H2 ──
+    'icon-tag': (c) => `<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M3 2h5l7 7-7 7H3V2z" fill="${c}" opacity="0.15"/><path d="M3 2h5l7 7-7 7H3V2z" fill="none" stroke="${c}" stroke-width="1.2" stroke-linejoin="round"/></svg>`,
+    'zebra-line': (c) => `<span style="display:block;"><svg width="100%" height="6" viewBox="0 0 200 6" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="1" x2="40" y2="1" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/><line x1="44" y1="1" x2="54" y2="1" stroke="${c}" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/><line x1="58" y1="1" x2="66" y2="1" stroke="${c}" stroke-width="2.5" stroke-linecap="round" opacity="0.25"/></svg></span>`,
+    'badge-bg': (c, cbg) => `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect width="24" height="24" rx="6" fill="${c}"/><path d="M7 12l3 3 7-7" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    'arrow-right': (c) => `<svg width="22" height="18" viewBox="0 0 22 18" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M2 9h14M12 4l5 5-5 5" stroke="${c}" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    'signal-dots': (c) => `<svg width="20" height="14" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><circle cx="4" cy="10" r="3" fill="${c}"/><circle cx="10" cy="7" r="3" fill="${c}" opacity="0.6"/><circle cx="16" cy="4" r="3" fill="${c}" opacity="0.3"/></svg>`,
+    // ── H3 ──
+    'squiggle': (c) => `<span style="display:block;"><svg width="100%" height="5" viewBox="0 0 120 5" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 2.5 Q5 0 10 2.5 T20 2.5 T30 2.5 T40 2.5 T50 2.5 T60 2.5 T70 2.5 T80 2.5 T90 2.5 T100 2.5 T110 2.5 T120 2.5" stroke="${c}" stroke-width="1.8" fill="none" opacity="0.5"/></svg></span>`,
+    'mini-tag': (c, cbg) => `<svg width="14" height="18" viewBox="0 0 14 18" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M0 0h10l4 4v14H0V0z" fill="${cbg}"/><path d="M0 0h10l4 4v14H0V0z" fill="none" stroke="${c}" stroke-width="1"/><path d="M10 0v4h4" fill="none" stroke="${c}" stroke-width="0.8" opacity="0.5"/></svg>`,
+    'check-mark': (c) => `<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><circle cx="8" cy="8" r="7" fill="${c}" opacity="0.15"/><path d="M5 8l2 2 4-4" stroke="${c}" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    'bookmark-corner': (c, cbg) => `<span style="position:absolute;top:0;left:0;width:16px;height:16px;overflow:hidden;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h16v16L8 11 0 16V0z" fill="${c}" opacity="0.2"/></svg></span>`,
+    'zigzag': (c) => `<span style="display:block;"><svg width="100%" height="5" viewBox="0 0 120 5" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 3 L6 1 L12 3 L18 1 L24 3 L30 1 L36 3 L42 1 L48 3 L54 1 L60 3 L66 1 L72 3 L78 1 L84 3 L90 1 L96 3 L102 1 L108 3 L114 1 L120 3" stroke="${c}" stroke-width="1.5" fill="none" opacity="0.4"/></svg></span>`,
+    // ── H4 ──
+    'mini-dot': (c) => `<svg width="8" height="8" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><circle cx="4" cy="4" r="3" fill="${c}"/></svg>`,
+    'pin': (c) => `<svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M7 1C4.8 1 3 2.8 3 5c0 3 4 8 4 8s4-5 4-8c0-2.2-1.8-4-4-4z" fill="${c}" opacity="0.7"/><circle cx="7" cy="5" r="1.5" fill="#fff"/></svg>`,
+    'gt-sign': (c) => `<svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M2 1l5 5-5 5" stroke="${c}" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  };
+
+  function svgDecor(type, c, cbg) {
+    const fn = SVG_DECO[type];
+    return fn ? fn(c, cbg) : '';
+  }
+
   function escapeAttr(s) {
     return String(s ?? '')
       .replace(/&/g, '&amp;')
@@ -128,6 +164,8 @@
       const cfg = settings[key] || settings.h2;
       const { preset, style } = buildHeading(lvl, cfg, settings);
       let content = text;
+      const c = cfg.color;
+      const cbg = settings.global.brandSoft;
 
       if (preset.prefix) content = preset.prefix + content;
       if (preset.suffix) content = content + preset.suffix;
@@ -151,7 +189,17 @@
         return `<h${lvl} style="${style}"><span style="color:${cfg.color}; margin-right:8px; font-family:Georgia,serif;">${String(n).padStart(2,'0')}</span>${content}</h${lvl}>`;
       }
 
-      return `<h${lvl} style="${style}">${content}</h${lvl}>`;
+      // SVG 装饰
+      const before = preset.svgBefore ? svgDecor(preset.svgBefore, c, cbg) : '';
+      const after = preset.svgAfter ? svgDecor(preset.svgAfter, c, cbg) : '';
+
+      // 特殊处理：gradient-fill 需要注入背景渐变
+      let finalStyle = style;
+      if (preset.svgBefore === 'gradient-fill') {
+        finalStyle = style.replace('border-radius:10px;', `border-radius:10px; background:linear-gradient(135deg, ${c}, ${cbg});`);
+      }
+
+      return `<h${lvl} style="${finalStyle}">${before}${content}${after}</h${lvl}>`;
     };
 
     // --- 段落 ---

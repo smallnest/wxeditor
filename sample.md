@@ -176,9 +176,9 @@ def compress_image(image_path, quality=0.85):
 
 ### 8. 链接
 
-[普通链接](https://github.com/zhijunio/article-tools)
+[普通链接](https://github.com/smallnest/wxeditor)
 
-[带箭头链接 →](https://github.com/zhijunio/article-tools)
+[带箭头链接 →](https://github.com/smallnest/wxeditor)
 
 ### 9. 图片
 
@@ -212,7 +212,7 @@ def compress_image(image_path, quality=0.85):
 ## 三、结语
 
 **Markdown 排版器**
-让公众号排版变得简单高效。若觉得有用，欢迎 [在 GitHub 点 Star](https://github.com/zhijunio/article-tools)。
+让公众号排版变得简单高效。若觉得有用，欢迎 [在 GitHub 点 Star](https://github.com/smallnest/wxeditor)。
 
 ![](https://images.unsplash.com/photo-1555099962-4199c345e5dd?w=800&h=400&fit=crop)
 *代码与创作，从这里开始*

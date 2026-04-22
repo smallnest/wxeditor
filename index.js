@@ -329,7 +329,7 @@
   const SAMPLE_MD_FALLBACK =
     '# Markdown 排版器\n\n' +
     '未能加载 `sample.md`。请在本目录执行 `python3 -m http.server` 后用 **http://** 打开页面；直接 **file://** 打开时浏览器禁止读取同目录文件。\n\n' +
-    '[GitHub · article-tools](https://github.com/zhijunio/article-tools)';
+    '[GitHub · wxeditor](https://github.com/smallnest/wxeditor)';
 
   let sampleMdPromise = null;
   function loadSampleMd() {
