@@ -1443,6 +1443,26 @@
     const s = slider(min, max, step, value, onChange, fmt);
     return makeFieldInline(label, s, s._val);
   }
+  function checkField(label, checked, onChange) {
+    const inp = document.createElement('input');
+    inp.type = 'checkbox';
+    inp.checked = !!checked;
+    inp.style.marginRight = '6px';
+    inp.addEventListener('change', () => onChange(inp.checked));
+    const wrap = document.createElement('div');
+    wrap.className = 'field';
+    const l = document.createElement('div');
+    l.className = 'field-label';
+    const ls = document.createElement('label');
+    ls.style.display = 'flex';
+    ls.style.alignItems = 'center';
+    ls.style.cursor = 'pointer';
+    ls.appendChild(inp);
+    ls.appendChild(document.createTextNode(label));
+    l.appendChild(ls);
+    wrap.appendChild(l);
+    return wrap;
+  }
   function makeFieldInline(label, control, valEl) {
     const f = document.createElement('div');
     f.className = 'field';
@@ -1628,6 +1648,7 @@
     box.appendChild(sliderField('行距', 1.4, 2.2, 0.05, s.lineHeight, v => update('p.lineHeight', v), v => Number(v).toFixed(2)));
     box.appendChild(sliderField('字间距', 0, 2, 0.1, s.letterSpacing, v => update('p.letterSpacing', v), v => Number(v).toFixed(1) + 'px'));
     box.appendChild(colorField('颜色', s.color, v => update('p.color', v)));
+    box.appendChild(checkField('水墨晕染效果', s.inkBlur, v => update('p.inkBlur', v)));
     return box;
   }
 

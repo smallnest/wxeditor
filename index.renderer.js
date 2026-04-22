@@ -154,7 +154,9 @@
       lh: cfg.lineHeight,
       ls: cfg.letterSpacing,
     };
-    return fillStyle(preset.style, vars) + `;font-weight:${fw}`;
+    let style = fillStyle(preset.style, vars) + `;font-weight:${fw}`;
+    if (cfg.inkBlur) style += ';text-shadow:0 1px 2px rgba(0,0,0,0.2)';
+    return style;
   }
 
   function buildBlockquote(cfg) {
