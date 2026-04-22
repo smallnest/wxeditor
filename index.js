@@ -1856,6 +1856,9 @@
         location.reload();
       }
     });
+    document.getElementById('btn-export-pdf').addEventListener('click', () => {
+      window.print();
+    });
     document.getElementById('sync-scroll-switch').addEventListener('click', () => {
       toggleScrollSync();
     });

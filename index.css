@@ -842,3 +842,51 @@ input[type="text"].txt:focus, select.txt:focus { border-color: var(--brand); }
   display: block;
 }
 .theme-list-item button.del:hover { color: var(--danger); }
+
+/* ===== 打印 / 导出 PDF ===== */
+@media print {
+  body { overflow: visible !important; background: white !important; }
+  .app { height: auto !important; }
+  /* 隐藏顶栏、编辑区、样式面板 */
+  .topbar,
+  .pane:first-child,
+  .pane.settings-pane { display: none !important; }
+  /* 只保留预览区 */
+  .main {
+    display: block !important;
+    grid-template-columns: none !important;
+    overflow: visible !important;
+  }
+  .preview-pane {
+    border: none !important;
+    overflow: visible !important;
+  }
+  .pane-head { display: none !important; }
+  .preview-wrap {
+    padding: 0 !important;
+    display: block !important;
+  }
+  .preview-frame {
+    width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+  }
+  .preview-phone-bar,
+  .preview-article-meta { display: none !important; }
+  #preview-scroll-root {
+    background: white !important;
+    overflow: visible !important;
+  }
+  #preview-content {
+    padding: 20px 0 !important;
+  }
+  /* 确保代码块不被截断 */
+  #preview-content pre {
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+    overflow: visible !important;
+  }
+}
