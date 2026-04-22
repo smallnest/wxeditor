@@ -77,7 +77,7 @@
     'eye': (c) => `<svg width="16" height="12" viewBox="0 0 16 12" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><ellipse cx="8" cy="6" rx="7" ry="5" fill="none" stroke="${c}" stroke-width="1.2" opacity="0.5"/><circle cx="8" cy="6" r="2.5" fill="${c}" opacity="0.5"/></svg>`,
     'cross': (c) => `<svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><line x1="2" y1="2" x2="10" y2="10" stroke="${c}" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/><line x1="10" y1="2" x2="2" y2="10" stroke="${c}" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/></svg>`,
     'dash-wave': (c) => `<span style="display:block;"><svg width="100%" height="4" viewBox="0 0 120 4" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 2 Q10 0 20 2 T40 2 T60 2 T80 2 T100 2 T120 2" stroke="${c}" stroke-width="1.2" fill="none" stroke-dasharray="4 3" opacity="0.5"/></svg></span>`,
-    'dot-trail': (c) => `<span style="display:block;"><svg width="100%" height="4" viewBox="0 0 120 4" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5" cy="2" r="2" fill="${c}" opacity="0.6"/><circle cx="20" cy="2" r="1.5" fill="${c}" opacity="0.4"/><circle cx="35" cy="2" r="1" fill="${c}" opacity="0.25"/></svg></span>`,
+    'dot-trail': (c) => `<span style="display:block;"><svg width="100%" height="8" viewBox="0 0 120 8" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="4" x2="42" y2="4" stroke="${c}" stroke-width="1.4" stroke-linecap="round" opacity="0.42"/><circle cx="56" cy="4" r="2.1" fill="${c}" opacity="0.58"/><circle cx="72" cy="4" r="1.6" fill="${c}" opacity="0.4"/><circle cx="86" cy="4" r="1.15" fill="${c}" opacity="0.26"/></svg></span>`,
     'bracket-mark': (c) => `<svg width="10" height="14" viewBox="0 0 10 14" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M8 1L2 7L8 13" stroke="${c}" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
 
     // ── 新增 H4 装饰 ──
@@ -121,6 +121,13 @@
     };
     let style = fillStyle(preset.style, vars);
     return { preset, style, vars };
+  }
+
+  function buildCustomHeadingPrefix(level, cfg) {
+    if ((level !== 2 && level !== 3 && level !== 4) || !cfg || !cfg.customPrefix) return '';
+    const prefix = escapeHtmlText(String(cfg.customPrefix));
+    if (!prefix) return '';
+    return `<span style="display:inline-block;margin-right:0.35em;">${prefix}</span>`;
   }
 
   function buildParagraph(cfg) {
@@ -197,21 +204,23 @@
       let content = text;
       const c = cfg.color;
       const cbg = settings.global.brandSoft;
+      const customPrefix = buildCustomHeadingPrefix(lvl, cfg);
 
       if (preset.prefix) content = preset.prefix + content;
       if (preset.suffix) content = content + preset.suffix;
+      if (customPrefix) content = customPrefix + content;
 
       if (preset.badge) {
         const badgeStyle = `display:inline-flex; align-items:center; justify-content:center; min-width:30px; height:30px; border-radius:50%; background:${cfg.color}; color:#fff; font-size:15px; font-weight:700; flex-shrink:0;`;
         if (!renderer._hCount) renderer._hCount = {};
         renderer._hCount[lvl] = (renderer._hCount[lvl] || 0) + 1;
-        return `<h${lvl} style="${style}"><span style="${badgeStyle}">${renderer._hCount[lvl]}</span><span>${text}</span></h${lvl}>`;
+        return `<h${lvl} style="${style}"><span style="${badgeStyle}">${renderer._hCount[lvl]}</span><span>${content}</span></h${lvl}>`;
       }
       if (preset.badgeSq) {
         const badgeStyle = `display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:24px; border-radius:4px; background:${cfg.color}; color:#fff; font-size:13px; font-weight:700; flex-shrink:0;`;
         if (!renderer._hCount) renderer._hCount = {};
         renderer._hCount[lvl] = (renderer._hCount[lvl] || 0) + 1;
-        return `<h${lvl} style="${style}"><span style="${badgeStyle}">${renderer._hCount[lvl]}</span><span>${text}</span></h${lvl}>`;
+        return `<h${lvl} style="${style}"><span style="${badgeStyle}">${renderer._hCount[lvl]}</span><span>${content}</span></h${lvl}>`;
       }
       if (preset.numPrefix) {
         if (!renderer._hCount) renderer._hCount = {};

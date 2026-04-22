@@ -1276,6 +1276,17 @@
     return makeFieldInline(label, wrap);
   }
 
+  function textField(label, value, onChange, placeholder, maxLength) {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'txt';
+    input.value = value || '';
+    if (placeholder) input.placeholder = placeholder;
+    if (maxLength) input.maxLength = maxLength;
+    input.addEventListener('input', () => onChange(input.value));
+    return makeFieldInline(label, input);
+  }
+
   function seg(options, activeId, onChange) {
     const wrap = document.createElement('div');
     wrap.className = 'seg';
@@ -1384,6 +1395,15 @@
 
     box.appendChild(sliderField('字号', 14, 32, 1, s.fontSize, v => update(key + '.fontSize', v), v => v + 'px'));
     box.appendChild(colorField('颜色', s.color, v => update(key + '.color', v)));
+    if (level === 2 || level === 3 || level === 4) {
+      box.appendChild(textField(
+        '前缀装饰',
+        s.customPrefix,
+        v => update(key + '.customPrefix', v),
+        '如 ✦、➜、【',
+        12
+      ));
+    }
     return box;
   }
 
