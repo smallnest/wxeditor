@@ -10,7 +10,8 @@ window.PRESETS = {
   global: {
     fontFamily: [
       { id: 'serif-zh',  name: '书卷衬线', value: "'PingFang SC', 'Songti SC', 'Source Han Serif SC', 'Noto Serif CJK SC', serif" },
-      { id: 'sans-zh',   name: '现代无衬线', value: "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif" },
+      { id: 'sans-zh',   name: '现代无衬线', value: "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif" },
+      { id: 'source-han-sans', name: '思源黑体', value: "'Source Han Sans SC', 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" },
       { id: 'fangsong',  name: '仿宋文艺', value: "'FangSong', 'STFangsong', '仿宋', serif" },
       { id: 'kaiti',     name: '楷体雅致', value: "'KaiTi', 'STKaiti', '楷体', serif" },
       { id: 'mixed',     name: '中西混排', value: "'Source Serif Pro', Georgia, 'PingFang SC', serif" },
@@ -1810,13 +1811,13 @@ window.THEMES = {
   // ── WeChat: 草绿、圆润亲和、聊天气泡感 ──
   wechat: {
     name: '微信新绿',
-    global: { bg: '#EDEDED', ink: '#1A1A1A', brand: '#07C160', brandSoft: '#DCF5E2', fontFamily: 'rounded', maxWidth: 340 },
-    h1: { preset: 'svg-flower', color: '#07C160', fontSize: 23 },
-    h2: { preset: 'svg-rocket', color: '#07C160', fontSize: 19 },
-    h3: { preset: 'svg-check', color: '#07C160', fontSize: 17 },
-    h4: { preset: 'svg-ringdot', color: '#576B95', fontSize: 14 },
-    p:  { preset: 'normal', color: '#1A1A1A', fontSize: 16, lineHeight: 1.85, letterSpacing: 0.15 },
-    blockquote: { preset: 'card', color: '#07C160', textColor: '#333333', bgColor: '#DCF5E2', fontSize: 15 },
+    global: { bg: '#EDEDED', ink: '#3E3E3E', brand: '#07C160', brandSoft: '#DCF5E2', fontFamily: 'rounded', maxWidth: 340 },
+    h1: { preset: 'svg-flower', color: '#07C160', fontSize: 20 },
+    h2: { preset: 'svg-rocket', color: '#07C160', fontSize: 20 },
+    h3: { preset: 'svg-check', color: '#07C160', fontSize: 18 },
+    h4: { preset: 'svg-ringdot', color: '#576B95', fontSize: 16 },
+    p:  { preset: 'normal', color: '#3E3E3E', fontSize: 15, lineHeight: 1.75, letterSpacing: 0.2 },
+    blockquote: { preset: 'card', color: '#07C160', textColor: '#595959', bgColor: '#DCF5E2', fontSize: 13 },
     pre: { preset: 'subtle-border' },
     code: { preset: 'pill-soft', color: '#07C160', bgColor: '#DCF5E2' },
     ul: { preset: 'check', color: '#07C160' },
@@ -1825,7 +1826,7 @@ window.THEMES = {
     img: { preset: 'bigrounded' },
     hr: { preset: 'three-dots', color: '#07C160' },
     table: { preset: 'softbg', color: '#07C160', bgColor: '#DCF5E2' },
-    bold: { color: '#1A1A1A' },
+    bold: { color: '#3E3E3E' },
     italic: { color: '#888888' },
   },
 };

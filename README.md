@@ -1,29 +1,23 @@
 # wxeditor
 
-一款专为微信公众号排版与发布场景设计的 Markdown 编辑器，支持实时预览、丰富主题、自定义样式、代码高亮主题切换，以及一键复制到公众号。
+一款专为微信公众号排版与发布场景设计的 Markdown 编辑器，支持实时预览、40个专业的主题、160+的代码样式，可自定义文章样式、代码高亮主题自由切换，以及一键复制到公众号。
 
-> 本项目 Fork 自 [zhijunio/article-tools](https://zhijunio.github.io/article-tools/md/)，该项目修改自 [gordensun/WX](https://gordensun.github.io/WX/)。
+> 本项目 Fork 自 [zhijunio/article-tools](https://zhijunio.github.io/article-tools/md/)，[zhijunio/article-tools]项目又修改自 [gordensun/WX](https://gordensun.github.io/WX/)。
 >
-> 这个 fork 在原有 Markdown 排版能力基础上，继续扩展了公众号写作场景里更高频的功能：主题系统、标题装饰、代码主题切换、图片处理、格式化与外链转脚注等。
+> 这个 fork 在原有 Markdown 排版能力基础上，继续扩展了公众号写作场景里更高频的功能：主题系统、标题装饰、代码主题切换、预览优化、格式化与外链转脚注等。
 
 ## 功能特性
 
 - **三栏实时排版** — 左侧 Markdown 编辑，中间实时预览，右侧样式面板；编辑区与预览区支持滚动同步。
 - **双预览模式** — 默认手机宽度预览；折叠编辑区后可切换到更宽的 `1024px` 网页预览模式。
-- **丰富主题系统** — 内置多组公众号风格主题与公司风格主题，主题下拉框支持中文主题优先排序，也支持保存、重命名、删除自定义主题。
+- **丰富主题系统** — 内置多组公众号风格主题， 基于[DESIGN.md](https://getdesign.md/) （github上6万多stars的项目）的思想，实现顶级公司的风格主题，主题下拉框支持中文主题优先排序，也支持保存、重命名、删除自定义主题。
 - **细粒度样式控制** — 标题、正文、引用、列表、表格、代码块等元素都可单独调节字号、颜色、预设和局部样式。
 - **标题装饰更丰富** — 补充了多批 SVG 标题装饰；H2 / H3 / H4 额外支持用户输入 Unicode 字符作为前缀装饰。
 - **代码块样式与高亮解耦** — `pre` 预设控制容器外观，`highlight.js` 控制 token 语法高亮，代码块样式切换会真实生效。
+- **hightlight.js** — 160多套hightlight.js的[代码样式](https://highlightjs.org/examples)，应有尽有。
 - **代码主题切换** — 顶栏支持切换 `highlight.js` 官方 examples 中的代码主题，并按代码块明暗自动过滤 light / dark 主题。
 - **新增多套 dark 代码块预设** — 包括 `午夜蓝`、`石墨灰`、`夜林`、`黑曜`、`余烬暗棕`、`深海`。
 - **公众号发布辅助** — 支持一键复制到公众号、复制 HTML 源码、外链转脚注、Markdown 格式化、随机色系、随机风格。
 - **智能粘贴与图片处理** — 支持富文本转 Markdown、粘贴/拖拽图片、自动压缩、`img://` 占位、本地 IndexedDB 持久化以及预览/复制链路中的图片恢复。
 - **本地持久化** — 编辑内容、样式设置、代码主题和自定义主题会保存到 `localStorage`，刷新后可恢复。
 
-## 技术栈
-
-- **marked.js** — Markdown 解析
-- **highlight.js** — 代码语法高亮与可切换主题
-- **Turndown** — HTML 转 Markdown（智能粘贴）
-- **IndexedDB** — 本地图片存储
-- **Canvas API** — 图片压缩

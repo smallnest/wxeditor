@@ -210,6 +210,7 @@
       const src = img.getAttribute('src');
       if (src && src.startsWith('img://')) {
         const imageId = src.replace('img://', '');
+        img.setAttribute('data-original-src', src);
         try {
           const objectURL = await imageStore.getImage(imageId);
           if (objectURL) {
@@ -289,7 +290,7 @@
 
   // ============ 默认设置 ============
   function defaultSettings() {
-    return JSON.parse(JSON.stringify(THEMES.claude));
+    return JSON.parse(JSON.stringify(THEMES.wechat));
   }
 
   // ============ State ============
@@ -297,7 +298,7 @@
     md: '',
     settings: defaultSettings(),
     customThemes: {}, // { id: {name, settings} }
-    currentThemeKey: 'claude', // 'claude' | 'minimal' | ... or 'custom:id'
+    currentThemeKey: 'wechat', // 'claude' | 'minimal' | ... or 'custom:id'
     codeTheme: 'github',
     settingsPaneCollapsed: false,
     editorPaneCollapsed: false,
@@ -486,6 +487,11 @@
     const parser = new DOMParser();
     const doc = parser.parseFromString(`<div id="copy-root">${preview.innerHTML}</div>`, 'text/html');
     const root = doc.getElementById('copy-root');
+    const section = root.firstElementChild;
+    if (section && section.tagName === 'SECTION') {
+      const currentStyle = section.getAttribute('style') || '';
+      section.setAttribute('style', `${currentStyle};box-sizing:border-box;padding:24px 24px 32px;`);
+    }
 
     Array.from(root.querySelectorAll('a[href]')).forEach((a) => {
       const href = (a.getAttribute('href') || '').trim();
@@ -503,18 +509,39 @@
     });
 
     const images = Array.from(root.querySelectorAll('img'));
-    let successCount = 0;
-    let failCount = 0;
-    for (const img of images) {
-      try {
-        const dataURL = await convertImageNodeToDataURL(img);
-        if (dataURL) {
-          img.setAttribute('src', dataURL);
-          successCount++;
+    for (let i = 0; i < images.length; i++) {
+      const img = images[i];
+      const alt = (img.getAttribute('alt') || '').trim() || `图片 ${i + 1}`;
+      const placeholder = doc.createElement('span');
+      placeholder.setAttribute('style', [
+        'display:block',
+        'margin:16px auto',
+        'padding:14px 16px',
+        'max-width:100%',
+        'border:1px dashed #C9CED6',
+        'border-radius:8px',
+        'background:#F7F8FA',
+        'color:#57606A',
+        'font-size:14px',
+        'line-height:1.6',
+        'text-align:center',
+      ].join(';'));
+      placeholder.textContent = `【图片待上传】${alt}`;
+
+      const figure = img.closest('figure');
+      if (figure && root.contains(figure)) {
+        const figcaption = figure.querySelector('figcaption');
+        const wrapper = doc.createElement('div');
+        wrapper.appendChild(placeholder);
+        if (figcaption) {
+          const caption = doc.createElement('div');
+          caption.setAttribute('style', 'margin-top:6px;font-size:12px;line-height:1.6;color:#8C959F;text-align:center;');
+          caption.textContent = (figcaption.textContent || '').trim();
+          if (caption.textContent) wrapper.appendChild(caption);
         }
-      } catch (error) {
-        failCount++;
-        console.warn('图片转 Base64 失败:', img.getAttribute('src'), error);
+        figure.parentNode.replaceChild(wrapper, figure);
+      } else {
+        img.parentNode.replaceChild(placeholder, img);
       }
     }
 
@@ -522,8 +549,8 @@
       html: root.innerHTML,
       plain: root.innerText || root.textContent || '',
       imageCount: images.length,
-      successCount,
-      failCount,
+      successCount: 0,
+      failCount: 0,
     };
   }
 
@@ -640,8 +667,8 @@
       } else {
         clipboardFallback(payload.html);
       }
-      if (payload.imageCount > 0 && payload.failCount > 0) {
-        toast(`✓ 已复制到公众号，${payload.failCount} 张图片保留原链接`);
+      if (payload.imageCount > 0) {
+        toast(`✓ 已复制到公众号，${payload.imageCount} 张图片已替换为待上传占位`);
       } else {
         toast('✓ 已复制到公众号');
       }
@@ -812,8 +839,8 @@
   function deleteCustomTheme(id) {
     delete state.customThemes[id];
     if (state.currentThemeKey === 'custom:' + id) {
-      state.currentThemeKey = 'claude';
-      applyTheme('claude');
+      state.currentThemeKey = 'wechat';
+      applyTheme('wechat');
     }
     save();
     updateThemeSelect();
@@ -1754,7 +1781,7 @@
       toast('✓ 已格式化');
     });
     document.getElementById('btn-reset').addEventListener('click', () => {
-      if (confirm('重置为暖棕书卷主题？自定义主题不会被删除。')) {
+      if (confirm('重置为微信新绿主题？自定义主题不会被删除。')) {
         localStorage.clear();
         location.reload();
       }
