@@ -451,7 +451,7 @@ window.THEMES = {
       ink: '#1D1D1F',
       brand: '#0071E3',
       brandSoft: '#E8F4FD',
-      fontFamily: 'sans-zh',
+      fontFamily: 'system',
       maxWidth: 340,
     },
     h1: { preset: 'svg-pen', color: '#1D1D1F', fontSize: 24 },
@@ -683,7 +683,7 @@ window.THEMES = {
       ink: '#E0E0E0',
       brand: '#76B900',
       brandSoft: '#2A3A1A',
-      fontFamily: 'sans-zh',
+      fontFamily: 'source-han-sans',
       maxWidth: 335,
     },
     h1: { preset: 'svg-gradbar', color: '#76B900', fontSize: 23 },
@@ -742,7 +742,7 @@ window.THEMES = {
       ink: '#2C2C2C',
       brand: '#F54E00',
       brandSoft: '#FFF1E5',
-      fontFamily: 'kaiti',
+      fontFamily: 'source-han-sans',
       maxWidth: 340,
     },
     h1: { preset: 'svg-zigzag', color: '#2C2C2C', fontSize: 23 },
@@ -916,7 +916,7 @@ window.THEMES = {
       ink: '#26251E',
       brand: '#F54E00',
       brandSoft: '#FFF0E5',
-      fontFamily: 'sans-zh',
+      fontFamily: 'source-han-sans',
       maxWidth: 340,
     },
     h1: { preset: 'svg-gradbar', color: '#26251E', fontSize: 24 },
@@ -945,7 +945,7 @@ window.THEMES = {
       ink: '#1A1A1A',
       brand: '#7B42BC',
       brandSoft: '#F3ECFA',
-      fontFamily: 'sans-zh',
+      fontFamily: 'source-han-sans',
       maxWidth: 335,
     },
     h1: { preset: 'svg-frame', color: '#7B42BC', fontSize: 23 },
@@ -974,7 +974,7 @@ window.THEMES = {
       ink: '#E0DBE8',
       brand: '#C2EF4E',
       brandSoft: '#2A2440',
-      fontFamily: 'sans-zh',
+      fontFamily: 'source-han-sans',
       maxWidth: 335,
     },
     h1: { preset: 'svg-dots', color: '#C2EF4E', fontSize: 23 },
@@ -1022,7 +1022,7 @@ window.THEMES = {
   // ── BMW: 工业感、零圆角、德系精度 ──
   bmw: {
     name: 'BMW 工业',
-    global: { bg: '#FFFFFF', ink: '#262626', brand: '#1C69D4', brandSoft: '#E5F0FC', fontFamily: 'sans-zh', maxWidth: 335 },
+    global: { bg: '#FFFFFF', ink: '#262626', brand: '#1C69D4', brandSoft: '#E5F0FC', fontFamily: 'serif-zh', maxWidth: 335 },
     h1: { preset: 'svg-diamond', color: '#262626', fontSize: 23 },
     h2: { preset: 'svg-terminal', color: '#1C69D4', fontSize: 19 },
     h3: { preset: 'svg-cross', color: '#262626', fontSize: 17 },
@@ -1088,7 +1088,7 @@ window.THEMES = {
   // ── ClickHouse: 暗黑底、霓虹黄绿 ──
   clickhouse: {
     name: 'ClickHouse 霓虹',
-    global: { bg: '#0A0A0A', ink: '#E0E0E0', brand: '#FAFF69', brandSoft: '#2A2E10', fontFamily: 'sans-zh', maxWidth: 335 },
+    global: { bg: '#0A0A0A', ink: '#E0E0E0', brand: '#FAFF69', brandSoft: '#2A2E10', fontFamily: 'source-han-sans', maxWidth: 335 },
     h1: { preset: 'svg-dbdiamond', color: '#FAFF69', fontSize: 23 },
     h2: { preset: 'svg-terminal', color: '#FAFF69', fontSize: 19 },
     h3: { preset: 'svg-eye', color: '#FAFF69', fontSize: 17 },
@@ -1132,7 +1132,7 @@ window.THEMES = {
   // ── Coinbase: 金融信任蓝 ──
   coinbase: {
     name: 'Coinbase 金融',
-    global: { bg: '#FFFFFF', ink: '#0A0B0D', brand: '#0052FF', brandSoft: '#E5EEFF', fontFamily: 'sans-zh', maxWidth: 340 },
+    global: { bg: '#FFFFFF', ink: '#0A0B0D', brand: '#0052FF', brandSoft: '#E5EEFF', fontFamily: 'serif-zh', maxWidth: 340 },
     h1: { preset: 'svg-crown', color: '#0A0B0D', fontSize: 24 },
     h2: { preset: 'svg-shield', color: '#0052FF', fontSize: 20 },
     h3: { preset: 'svg-bookmark', color: '#0052FF', fontSize: 17 },
@@ -1198,7 +1198,7 @@ window.THEMES = {
   // ── Expo: 冷灰画布、单色自信 ──
   expo: {
     name: 'Expo 冷灰',
-    global: { bg: '#F0F0F3', ink: '#1C2024', brand: '#0D74CE', brandSoft: '#E0EBF5', fontFamily: 'sans-zh', maxWidth: 340 },
+    global: { bg: '#F0F0F3', ink: '#1C2024', brand: '#0D74CE', brandSoft: '#E0EBF5', fontFamily: 'source-han-sans', maxWidth: 340 },
     h1: { preset: 'svg-frame', color: '#1C2024', fontSize: 24 },
     h2: { preset: 'svg-rocket', color: '#1C2024', fontSize: 19 },
     h3: { preset: 'svg-zigzag', color: '#0D74CE', fontSize: 17 },
@@ -1220,7 +1220,7 @@ window.THEMES = {
   // ── Ferrari: 跃马红、极致克制 ──
   ferrari: {
     name: 'Ferrari 红',
-    global: { bg: '#FFFFFF', ink: '#181818', brand: '#DA291C', brandSoft: '#FDECEA', fontFamily: 'sans-zh', maxWidth: 335 },
+    global: { bg: '#FFFFFF', ink: '#181818', brand: '#DA291C', brandSoft: '#FDECEA', fontFamily: 'serif-zh', maxWidth: 335 },
     h1: { preset: 'svg-crown', color: '#181818', fontSize: 24 },
     h2: { preset: 'svg-lightning', color: '#DA291C', fontSize: 19 },
     h3: { preset: 'svg-sparkle', color: '#181818', fontSize: 17 },
@@ -1242,7 +1242,7 @@ window.THEMES = {
   // ── Kraken: 可信紫、专业交易 ──
   kraken: {
     name: 'Kraken 紫',
-    global: { bg: '#FFFFFF', ink: '#101114', brand: '#7132F5', brandSoft: '#F0EAFE', fontFamily: 'sans-zh', maxWidth: 335 },
+    global: { bg: '#FFFFFF', ink: '#101114', brand: '#7132F5', brandSoft: '#F0EAFE', fontFamily: 'mono-zh', maxWidth: 335 },
     h1: { preset: 'svg-starburst', color: '#101114', fontSize: 23 },
     h2: { preset: 'svg-hexagon', color: '#7132F5', fontSize: 19 },
     h3: { preset: 'svg-eye', color: '#7132F5', fontSize: 17 },
@@ -1264,7 +1264,7 @@ window.THEMES = {
   // ── Lamborghini: 暗夜奢华、金色点缀 ──
   lamborghini: {
     name: 'Lambo 金夜',
-    global: { bg: '#0A0A0A', ink: '#F0F0F0', brand: '#FFC000', brandSoft: '#2A2200', fontFamily: 'sans-zh', maxWidth: 335 },
+    global: { bg: '#0A0A0A', ink: '#F0F0F0', brand: '#FFC000', brandSoft: '#2A2200', fontFamily: 'serif-zh', maxWidth: 335 },
     h1: { preset: 'svg-glowbar', color: '#FFC000', fontSize: 23 },
     h2: { preset: 'svg-rocket', color: '#FFC000', fontSize: 19 },
     h3: { preset: 'svg-dottail', color: '#FFC000', fontSize: 17 },
@@ -1638,7 +1638,7 @@ window.THEMES = {
   // ── Tesla: 电光蓝、极简展厅 ──
   tesla: {
     name: 'Tesla 电光',
-    global: { bg: '#FFFFFF', ink: '#171A20', brand: '#3E6AE1', brandSoft: '#E8EDF8', fontFamily: 'sans-zh', maxWidth: 340 },
+    global: { bg: '#FFFFFF', ink: '#171A20', brand: '#3E6AE1', brandSoft: '#E8EDF8', fontFamily: 'source-han-sans', maxWidth: 340 },
     h1: { preset: 'svg-diamond', color: '#171A20', fontSize: 24 },
     h2: { preset: 'svg-lightning', color: '#171A20', fontSize: 19 },
     h3: { preset: 'svg-gt', color: '#171A20', fontSize: 17 },
