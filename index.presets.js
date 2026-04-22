@@ -9,13 +9,16 @@ window.PRESETS = {
   // ============ 全局 ============
   global: {
     fontFamily: [
-      { id: 'serif-zh',  name: '书卷衬线', value: "'PingFang SC', 'Songti SC', 'Source Han Serif SC', 'Noto Serif CJK SC', serif" },
-      { id: 'sans-zh',   name: '现代无衬线', value: "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif" },
+      { id: 'serif-zh',  name: '书卷衬线', value: "'PingFang SC', 'Songti SC', 'SimSun', '宋体', 'Source Han Serif SC', 'Noto Serif CJK SC', serif" },
+      { id: 'sans-zh',   name: '现代无衬线', value: "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', 'Noto Sans CJK SC', 'WenQuanYi Micro Hei', sans-serif" },
       { id: 'source-han-sans', name: '思源黑体', value: "'Source Han Sans SC', 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif" },
       { id: 'fangsong',  name: '仿宋文艺', value: "'FangSong', 'STFangsong', '仿宋', serif" },
       { id: 'kaiti',     name: '楷体雅致', value: "'KaiTi', 'STKaiti', '楷体', serif" },
-      { id: 'mixed',     name: '中西混排', value: "'Source Serif Pro', Georgia, 'PingFang SC', serif" },
-      { id: 'rounded',   name: '圆润亲和', value: "'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" },
+      { id: 'mixed',     name: '中西混排', value: "'Source Serif Pro', Georgia, 'PingFang SC', 'SimSun', 'Microsoft YaHei', serif" },
+      { id: 'rounded',   name: '圆润亲和', value: "'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif" },
+      { id: 'system',    name: '系统默认', value: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif" },
+      { id: 'lxgw-kai',  name: '霞鹜文楷', value: "'LXGW WenKai', 'KaiTi', 'STKaiti', serif" },
+      { id: 'mono-zh',   name: '等宽中文', value: "'Noto Sans Mono CJK SC', 'Source Han Mono SC', 'PingFang SC', 'Microsoft YaHei', monospace" },
     ],
   },
 
@@ -292,7 +295,7 @@ window.THEMES = {
     ol: { preset: 'arabic', color: '#C96442' },
     a: { preset: 'dashed', color: '#C96442' },
     img: { preset: 'rounded' },
-    hr: { preset: 'diamond', color: '#C96442' },
+    hr: { preset: 'gradient', color: '#C96442' },
     table: { preset: 'softbg', color: '#C96442', bgColor: '#FAF9F5' },
     bold: { color: '#141413' },
     italic: { color: '#5E5D59' },
