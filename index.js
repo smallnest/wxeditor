@@ -1624,6 +1624,7 @@
       (p) => `<span style="font-size:13px; color:${s.color}">${p.name}</span>`
     ));
     box.appendChild(sliderField('字号', 12, 22, 1, s.fontSize, v => update('p.fontSize', v), v => v + 'px'));
+    box.appendChild(sliderField('字重', 100, 900, 100, s.fontWeight || 400, v => update('p.fontWeight', v), v => v));
     box.appendChild(sliderField('行距', 1.4, 2.2, 0.05, s.lineHeight, v => update('p.lineHeight', v), v => Number(v).toFixed(2)));
     box.appendChild(sliderField('字间距', 0, 2, 0.1, s.letterSpacing, v => update('p.letterSpacing', v), v => Number(v).toFixed(1) + 'px'));
     box.appendChild(colorField('颜色', s.color, v => update('p.color', v)));

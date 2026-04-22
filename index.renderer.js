@@ -147,13 +147,14 @@
 
   function buildParagraph(cfg) {
     const preset = find(P.p, cfg.preset);
+    const fw = cfg.fontWeight || 400;
     const vars = {
       fs: cfg.fontSize,
       c: cfg.color,
       lh: cfg.lineHeight,
       ls: cfg.letterSpacing,
     };
-    return fillStyle(preset.style, vars);
+    return fillStyle(preset.style, vars) + `;font-weight:${fw}`;
   }
 
   function buildBlockquote(cfg) {
