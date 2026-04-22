@@ -658,8 +658,15 @@
   function updateThemeSelect() {
     const sel = document.getElementById('theme-select');
     sel.innerHTML = '';
-    // 预设
-    Object.entries(THEMES).forEach(([k, t]) => {
+    // 预设：全中文名称排最前，其余按名称排序
+    const sorted = Object.entries(THEMES).sort((a, b) => {
+      const aAllZh = /^[\u4e00-\u9fff]+$/.test(a[1].name);
+      const bAllZh = /^[\u4e00-\u9fff]+$/.test(b[1].name);
+      if (aAllZh && !bAllZh) return -1;
+      if (!aAllZh && bAllZh) return 1;
+      return a[1].name.localeCompare(b[1].name, 'zh');
+    });
+    sorted.forEach(([k, t]) => {
       const opt = document.createElement('option');
       opt.value = k;
       opt.textContent = t.name;

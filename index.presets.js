@@ -638,7 +638,7 @@ window.THEMES = {
 
   // ── Xiaomi/小米: 橙色活力、简洁几何 ──
   xiaomi: {
-    name: '小米橙',
+    name: '小米橘橙',
     global: {
       bg: '#FFFFFF',
       ink: '#333333',
@@ -1799,5 +1799,27 @@ window.THEMES = {
     table: { preset: 'card', color: '#FFFFFF', bgColor: '#2A2D34' },
     bold: { color: '#FFFFFF' },
     italic: { color: '#999999' },
+  },
+
+  // ── WeChat: 草绿、圆润亲和、聊天气泡感 ──
+  wechat: {
+    name: '微信新绿',
+    global: { bg: '#EDEDED', ink: '#1A1A1A', brand: '#07C160', brandSoft: '#DCF5E2', fontFamily: 'rounded', maxWidth: 340 },
+    h1: { preset: 'svg-flower', color: '#07C160', fontSize: 23 },
+    h2: { preset: 'svg-rocket', color: '#07C160', fontSize: 19 },
+    h3: { preset: 'svg-check', color: '#07C160', fontSize: 17 },
+    h4: { preset: 'svg-ringdot', color: '#576B95', fontSize: 14 },
+    p:  { preset: 'normal', color: '#1A1A1A', fontSize: 16, lineHeight: 1.85, letterSpacing: 0.15 },
+    blockquote: { preset: 'card', color: '#07C160', textColor: '#333333', bgColor: '#DCF5E2', fontSize: 15 },
+    pre: { preset: 'subtle-border' },
+    code: { preset: 'pill-soft', color: '#07C160', bgColor: '#DCF5E2' },
+    ul: { preset: 'check', color: '#07C160' },
+    ol: { preset: 'circled', color: '#07C160' },
+    a: { preset: 'underline', color: '#576B95' },
+    img: { preset: 'bigrounded' },
+    hr: { preset: 'three-dots', color: '#07C160' },
+    table: { preset: 'softbg', color: '#07C160', bgColor: '#DCF5E2' },
+    bold: { color: '#1A1A1A' },
+    italic: { color: '#888888' },
   },
 };
