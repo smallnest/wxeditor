@@ -1,8 +1,10 @@
 # wxeditor
 
+免费使用地址：https://md.rcpx.io
+
 一款专为微信公众号排版与发布场景设计的 Markdown 编辑器，支持实时预览、40个专业的主题、160+的代码样式，可自定义文章样式、代码高亮主题自由切换，以及一键复制到公众号。
 
-> 本项目 Fork 自 [zhijunio/article-tools](https://zhijunio.github.io/article-tools/md/)，[zhijunio/article-tools]项目又修改自 [gordensun/WX](https://gordensun.github.io/WX/)。
+> 本项目 Fork 自 [zhijunio/article-tools](https://zhijunio.github.io/article-tools/md/)，`zhijunio/article-tools`项目又修改自 [gordensun/WX](https://gordensun.github.io/WX/)。
 >
 > 这个 fork 在原有 Markdown 排版能力基础上，继续扩展了公众号写作场景里更高频的功能：主题系统、标题装饰、代码主题切换、预览优化、格式化与外链转脚注等。
 
