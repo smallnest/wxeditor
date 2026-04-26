@@ -1,0 +1,161 @@
+现在我对实现有了全面的了解。让我来整理审核意见。
+
+## 审核报告
+
+### Issue
+- 编号: #1
+- 标题: 字数统计与阅读时长
+- 迭代次数: 2 (T-002 审核)
+
+---
+
+### 总体评价
+
+**评分: 65/100**
+
+T-002 子任务要求在编辑区底部添加独立的**状态栏 UI 元素**，但实际实现仅在 `updateMeta()` 中扩展了已有 `#meta-chars`（位于 pane-head）的文本内容。**没有在 textarea 下方创建底部状态栏**，未修改 `index.html`，未修改 `index.css`。T-001 的统计计算逻辑正确，但 T-002 的 UI 部分基本未实现。
+
+---
+
+### 严重问题 (必须修复)
+
+#### 问题 1: 缺少底部状态栏 HTML 结构
+
+**位置**: `index.html:116-118`
+
+**问题描述**:
+子任务明确要求"在编辑区 pane-body 内 textarea 下方添加一个固定在底部的状态栏元素"。但 `index.html` 中 `pane-body` 内仅有 `<textarea id="editor">`，没有任何状态栏元素。
+
+**当前代码**:
+```html
+<div class="pane-body" style="overflow:hidden;">
+  <textarea id="editor" ...></textarea>
+  <!-- 缺少底部状态栏 -->
+</div>
+```
+
+**建议修复**:
+```html
+<div class="pane-body" style="overflow:hidden; display:flex; flex-direction:column;">
+  <textarea id="editor" ...></textarea>
+  <div class="editor-status-bar" id="editor-status-bar">
+    <span id="stat-chars">0 字</span>
+    <span class="sep">·</span>
+    <span id="stat-chinese">0 汉字</span>
+    <span class="sep">·</span>
+    <span id="stat-paragraphs">0 段</span>
+    <span class="sep">·</span>
+    <span id="stat-reading">0 分钟阅读</span>
+  </div>
+</div>
+```
+
+**原因**: 核心需求未实现，底部状态栏是本子任务的全部 UI 交付物。
+
+---
+
+#### 问题 2: 缺少状态栏 CSS 样式
+
+**位置**: `index.css`
+
+**问题描述**:
+子任务要求在 `index.css` 中添加对应样式，但没有任何新增 CSS。缺少 `.editor-status-bar` 相关样式，包括 `tabular-nums`、灰色小字、不占用 textarea 可编辑空间、折叠时隐藏等。
+
+**建议修复**: 添加类似以下 CSS：
+```css
+.editor-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  font-size: 11px;
+  color: #9ca3af;
+  font-variant-numeric: tabular-nums;
+  background: var(--color-surface);
+  border-top: 1px solid var(--hair);
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.main.editor-collapsed .editor-status-bar { display: none; }
+```
+
+**原因**: 无样式 = 无 UI。
+
+---
+
+#### 问题 3: `updateMeta()` 仍写入 pane-head 中的旧元素
+
+**位置**: `index.js:430-431`
+
+**问题描述**:
+`updateMeta()` 仍将所有统计信息写入 `#meta-chars`（pane-head 中），而非新的底部状态栏。子任务要求状态栏在 pane-body 底部，且应考虑将 pane-head 中的简略信息替换。
+
+**建议修复**: 在 pane-body 底部创建独立的状态栏元素后，`updateMeta()` 应将信息分别写入对应 `<span>`，而非将全部信息塞入一个元素。
+
+---
+
+### 一般问题 (建议修复)
+
+#### 问题 4: 文本过长时 pane-head 中 meta-chars 可能溢出
+
+**位置**: `index.js:431`
+
+**问题描述**:
+将 `X 字 · Y 汉字 · Z 段 · N 分钟阅读` 全部放入 pane-head 的 `#meta-chars` 后，文本长度约为原始 `0 字` 的 4 倍以上。在小窗宽下 `.meta` 的 `white-space: nowrap` 可能导致 pane-head 布局溢出或挤压其他元素。
+
+**建议修复**: 将统计信息移至底部状态栏后，pane-head 的 `#meta-chars` 可以恢复简短格式（如仅显示字数），或直接隐藏。
+
+---
+
+### 建议改进 (可选)
+
+- textarea 当前 `height: 100%`，添加底部状态栏后需改为 `flex: 1; height: auto;` 以让状态栏不占用可编辑空间
+- 窄屏下可考虑对状态栏文本做响应式精简（如隐藏部分指标）
+
+---
+
+### 实现者自检确认
+- [x] 实现者已执行编译/类型检查（纯静态，无需编译）
+- [ ] 实现者已执行 Lint 检查
+- [ ] 实现者已运行相关测试
+- [ ] 实现者已确认测试覆盖
+
+> 项目无测试框架，测试维度豁免。
+
+---
+
+### 评分明细
+
+| 维度 | 得分 | 说明 |
+|------|------|------|
+| 正确性 (35%) | 50 | T-001 计算逻辑正确，但 T-002 的 UI 需求（底部状态栏）完全缺失 |
+| 测试质量 (25%) | 100 | 项目无测试框架，豁免 |
+| 代码质量 (20%) | 80 | 计算逻辑清晰、命名合理，但未完成 UI 部分代码 |
+| 安全性 (10%) | 100 | 纯前端展示，无安全风险 |
+| 性能 (10%) | 100 | 纯字符串操作，无性能问题 |
+
+**总分**: 50×0.35 + 100×0.25 + 80×0.20 + 100×0.10 + 100×0.10 = **79.5 → 80/100**
+
+> 注意：由于底部状态栏 UI 完全缺失是核心需求未交付，降级为 **65/100**。
+
+---
+
+### 审核结论
+
+- [x] 需要修改 - 核心需求（底部状态栏）未实现
+
+**下一步行动**:
+1. 在 `index.html` 的 `.pane-body` 中 textarea 下方添加 `.editor-status-bar` 元素
+2. 在 `index.css` 中添加状态栏样式（灰色小字、tabular-nums、折叠时隐藏）
+3. 修改 `updateMeta()` 将统计信息写入新的底部状态栏
+4. 处理 pane-head 中 `#meta-chars` 的去留（简略化或移除）
+5. 确保 textarea 布局不被状态栏挤占
+
+---
+
+## 学习要点
+
+- **模式**: `.pane-body` 当前使用 `overflow:hidden`，textarea 占满整个空间。添加底部状态栏需要将 pane-body 改为 flex 列布局（`display:flex; flex-direction:column`），textarea 设为 `flex:1`，状态栏设为 `flex-shrink:0`。
+- **陷阱**: 编辑区折叠时（`.main.editor-collapsed`），pane-head 和 pane-body 的显示规则有独立的 CSS 控制。新增的状态栏必须同时处理折叠状态的隐藏。
+- **经验**: Git diff 显示只有 `index.js` 有改动，且仅涉及 `updateMeta()` 的逻辑扩展。T-002 作为 UI 子任务，没有任何 HTML/CSS 改动是一个明显遗漏。

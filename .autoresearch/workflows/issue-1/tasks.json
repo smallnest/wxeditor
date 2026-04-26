@@ -1,0 +1,52 @@
+{
+  "issueNumber": 1,
+  "subtasks": [
+    {
+      "id": "T-001",
+      "title": "扩展统计计算逻辑",
+      "description": "在 index.js 中扩展 updateMeta() 函数，新增汉字数、段落数、预估阅读时间的计算逻辑。汉字数通过正则匹配 CJK Unified Ideographs 范围 (\\u4e00-\\u9fff) 统计；段落数通过连续空行分割非空文本块来统计；阅读时间按汉字数 / 400（中文 400 字/分钟）计算，取整显示。计算结果挂载到 DOM 元素上。",
+      "acceptanceCriteria": [
+        "updateMeta() 能正确计算总字符数、汉字数、段落数和预估阅读时间",
+        "汉字数通过正则 /[\\u4e00-\\u9fff]/g 精确统计 CJK 字符",
+        "段落数通过空行分割文本块，排除空段落",
+        "阅读时间 = Math.max(1, Math.ceil(汉字数 / 400)) 分钟",
+        "空内容时各指标均为 0",
+        "性能良好，纯计算无 DOM 查询瓶颈"
+      ],
+      "priority": 1,
+      "type": "code",
+      "passes": true
+    },
+    {
+      "id": "T-002",
+      "title": "添加编辑区底部状态栏 UI",
+      "description": "在编辑区 pane-body 内 textarea 下方添加一个固定在底部的状态栏元素，用于展示字数、汉字数、段落数和预估阅读时间。同时在 index.html 中添加状态栏 HTML 结构，在 index.css 中添加对应样式。状态栏需与现有 pane-head 中 meta-chars 元素共存（可考虑将 pane-head 中的简略信息替换为底部状态栏的详细信息）。状态栏设计应简洁、不干扰编辑，使用已有的 .meta 样式风格。",
+      "acceptanceCriteria": [
+        "编辑区底部出现状态栏，显示：字数、汉字数、段落数、预估阅读时间",
+        "状态栏样式与现有 UI 风格一致（灰色小字、tabular-nums）",
+        "状态栏不占用 textarea 的可编辑空间，不影响滚动",
+        "编辑区折叠时状态栏隐藏（与 .main.editor-collapsed 样式兼容）",
+        "响应式适配，窄屏下信息不溢出"
+      ],
+      "priority": 2,
+      "type": "ui",
+      "passes": true
+    },
+    {
+      "id": "T-003",
+      "title": "连接统计逻辑与状态栏并添加防抖优化",
+      "description": "将 T-001 的统计计算函数与 T-002 的状态栏 DOM 元素连接，确保每次编辑器内容变化时状态栏实时更新。在 renderPreview() 调用链中更新状态栏。同时添加轻量防抖（debounce）机制，确保高频输入时统计计算不会造成性能瓶颈。测试验证各种输入场景（纯中文、纯英文、中英混合、空内容、大量文本）。",
+      "acceptanceCriteria": [
+        "编辑器输入时状态栏实时更新字数、汉字数、段落数和阅读时间",
+        "高频输入不卡顿，统计更新有合理防抖（如 requestAnimationFrame 或 100ms debounce）",
+        "纯中文文本：字数 = 汉字数，阅读时间 = 汉字数/400 分钟",
+        "纯英文文本：汉字数 = 0，阅读时间显示 '< 1 分钟' 或 '0 分钟'",
+        "中英混合文本：汉字数只统计中文字符",
+        "空内容时显示 '0 字 · 0 汉字 · 0 段落 · < 1 分钟'"
+      ],
+      "priority": 3,
+      "type": "ui",
+      "passes": true
+    }
+  ]
+}

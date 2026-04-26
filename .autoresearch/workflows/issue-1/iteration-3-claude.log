@@ -1,0 +1,30 @@
+所有修改已验证。以下是已完成的操作：
+
+## 修改总结
+
+### 1. `index.html` - 添加了底部状态栏 HTML
+- 将 `.pane-body` 修改为 `display:flex; flex-direction:column`，以便 `textarea` 和状态栏能够正确堆叠显示。
+- 在 `textarea` 下方添加了 `.editor-status-bar` `div`，其中包含 4 个 `<span>` 元素，分别用于字数、汉字数、段落数和阅读时间，并用 `·` 分隔符隔开。
+
+### 2. `index.css` - 添加了状态栏样式
+- `.editor-status-bar`：弹性布局，11px 灰色文本，使用 `tabular-nums` 字体，顶部有细边框，`flex-shrink:0`，这样它就不会侵占编辑空间。
+- `.editor-status-bar .sep`：分隔符样式。
+- `.main.editor-collapsed .editor-status-bar { display: none; }`：当编辑面板折叠时隐藏。
+- 将 `#editor` 的 `height: 100%` 修改为 `flex: 1; min-height: 0`，以便 `textarea` 能够正确填充可用空间。
+
+### 3. `index.js` - 更新了 `updateMeta()`
+- 面板头部的 `#meta-chars` 现在只显示简短格式（“X 字”）。
+- 底部状态栏的每个 `span` 元素（`#stat-chars`、`#stat-chinese`、`#stat-paragraphs`、`#stat-reading`）都单独更新其文本内容。
+
+### 自检清单
+- [x] 代码编译（静态 HTML/JS，无构建步骤）
+- [x] Lint 检查（无 lint 工具，代码遵循现有模式）
+- [x] 无安全风险（纯前端 DOM 文本更新）
+- [x] 性能无问题（简单的字符串计算 + 4 个 `getElementById` 调用）
+- [x] 折叠状态处理（CSS 在 `.editor-collapsed` 时隐藏状态栏）
+- [x] Textarea 不受影响（`flex:1` 替代 `height:100%`）
+
+## 经验总结
+- **模式**：`.pane-body` 使用 `overflow:hidden` 和一个 `height:100%` 的 `textarea`。为了添加一个固定的底部栏，需要切换到 `display:flex; flex-direction:column` 并设置 `textarea` 的 `flex:1`。
+- **陷阱**：编辑器折叠样式 `.main.editor-collapsed .pane:first-child .pane-body { display: none }` 已经处理了折叠时的隐藏，但为 `.editor-status-bar` 添加了一个明确的规则，增加了额外的安全性。
+- **经验**：面板头部的 `#meta-chars` 应该保持简洁，以避免溢出；详细的统计信息属于专用的底部栏。
