@@ -360,6 +360,27 @@ body {
   min-height: 0;
 }
 
+/* ===== 编辑区底部状态栏 ===== */
+.editor-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  font-size: 11px;
+  color: #9ca3af;
+  font-variant-numeric: tabular-nums;
+  background: var(--color-surface);
+  border-top: 1px solid var(--hair);
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.editor-status-bar .sep {
+  margin: 0 2px;
+  opacity: 0.5;
+}
+.main.editor-collapsed .editor-status-bar { display: none; }
+
 /* ===== 左：编辑器 ===== */
 #editor.editor-dragover {
   outline: 2px dashed var(--brand, #2563eb);
@@ -389,7 +410,8 @@ body {
 
 #editor {
   width: 100%;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   border: none;
   outline: none;
   padding: 24px;

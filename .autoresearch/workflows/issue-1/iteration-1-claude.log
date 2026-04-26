@@ -1,0 +1,19 @@
+## 实现总结
+
+在 `index.js:422-432` 中扩展了 `updateMeta()` 函数：
+
+| 指标 | 逻辑 |
+|------|------|
+| **总字符数** | `chars` — 去除 Markdown 符号和空白后的字符数（保持不变） |
+| **汉字数** | `chineseCount` — 通过 `/[\u4e00-\u9fff]/g` 匹配 CJK Unified Ideographs |
+| **段落数** | `paragraphs` — 按连续空行 `\n\s*\n` 分割，过滤空块 |
+| **阅读时间** | `readingTime` — `Math.max(1, Math.ceil(chineseCount / 400))` 分钟，空内容时为 0 |
+
+显示格式：`X 字 · Y 汉字 · Z 段 · N 分钟阅读`
+
+性能方面：所有计算都是纯字符串操作，无 DOM 查询瓶颈（仅在最后通过一个 `getElementById` 更新显示）。
+
+## 经验总结
+
+- **模式**: `updateMeta()` 在 `renderPreview()` 末尾调用，是统计指标的统一更新入口。修改时只需扩展此函数的计算逻辑。
+- **经验**: 该项目是纯静态 HTML/JS，无构建步骤和测试框架。JS 通过 IIFE 封装，所有状态在 `state` 对象中管理。

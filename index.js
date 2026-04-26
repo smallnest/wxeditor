@@ -420,10 +420,27 @@
   }
 
   function updateMeta() {
-    const text = (state.md || '').replace(/[#*_`~\->[\]()]/g, '');
+    const raw = state.md || '';
+    const text = raw.replace(/[#*_`~\->[\]()]/g, '');
     const chars = text.replace(/\s/g, '').length;
-    const el = document.getElementById('meta-chars');
-    if (el) el.textContent = chars + ' 字';
+    const cjkMatches = raw.match(/[\u4e00-\u9fff]/g);
+    const chineseCount = cjkMatches ? cjkMatches.length : 0;
+    const paragraphs = raw.split(/\n\s*\n/).filter(p => p.trim().length > 0).length;
+    const readingTime = chineseCount > 0 ? Math.max(1, Math.ceil(chineseCount / 400)) : 0;
+
+    // Update pane-head with short format
+    const metaEl = document.getElementById('meta-chars');
+    if (metaEl) metaEl.textContent = chars + ' 字';
+
+    // Update bottom status bar with detailed stats
+    const statChars = document.getElementById('stat-chars');
+    const statChinese = document.getElementById('stat-chinese');
+    const statParagraphs = document.getElementById('stat-paragraphs');
+    const statReading = document.getElementById('stat-reading');
+    if (statChars) statChars.textContent = chars + ' 字';
+    if (statChinese) statChinese.textContent = chineseCount + ' 汉字';
+    if (statParagraphs) statParagraphs.textContent = paragraphs + ' 段';
+    if (statReading) statReading.textContent = readingTime + ' 分钟阅读';
   }
 
   // ============ Toast ============

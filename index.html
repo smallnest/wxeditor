@@ -113,8 +113,17 @@
           <span class="pane-head-hint">粘贴或输入 Markdown 内容</span>
           <span class="meta" id="meta-chars">0 字</span>
         </div>
-        <div class="pane-body" style="overflow:hidden;">
+        <div class="pane-body" style="overflow:hidden; display:flex; flex-direction:column;">
           <textarea id="editor" spellcheck="false" placeholder="# 在这里写 Markdown..."></textarea>
+          <div class="editor-status-bar" id="editor-status-bar">
+            <span id="stat-chars">0 字</span>
+            <span class="sep">·</span>
+            <span id="stat-chinese">0 汉字</span>
+            <span class="sep">·</span>
+            <span id="stat-paragraphs">0 段</span>
+            <span class="sep">·</span>
+            <span id="stat-reading">0 分钟阅读</span>
+          </div>
         </div>
       </section>
 
