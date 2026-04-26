@@ -342,7 +342,7 @@
           }
         }
       }
-      const codeShell = 'background:transparent;padding:0;color:inherit;font-family:inherit;font-size:inherit;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere';
+      const codeShell = 'background:transparent;padding:0;font-family:inherit;font-size:inherit;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere';
       return `<pre style="${preStyle}"><code class="hljs" style="${codeShell}">${inner}</code></pre>`;
     };
 

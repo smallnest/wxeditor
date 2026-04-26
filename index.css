@@ -404,7 +404,6 @@ body {
   word-break: break-word !important;
   overflow-wrap: anywhere !important;
   background: transparent !important;
-  color: inherit !important;
   border: none !important;
 }
 
