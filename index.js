@@ -405,13 +405,13 @@
       console.warn('processImageProtocol', e);
     }
     const box = document.getElementById('preview-content');
+    // 网页预览模式下，将 section 的 maxWidth 替换为更宽的值
+    if (state.editorPaneCollapsed) {
+      html = html.replace(/max-width:\d+px/, 'max-width:900px');
+    }
     if (box) box.innerHTML = html;
     if (state.sensitiveWordsEnabled && sensitiveDetector && box) {
       highlightSensitiveWordsInDOM(box);
-    }
-    if (state.editorPaneCollapsed) {
-      const section = box ? box.querySelector(':scope > section') : null;
-      if (section) section.style.maxWidth = '900px';
     }
     applyPreviewBg();
     updateMeta();
@@ -769,13 +769,7 @@
       if (frame) frame.style.width = '';
       if (label) label.textContent = '预览区域（手机预览 · 375px）';
     }
-    void renderPreview().then(() => {
-      // renderPreview 内部已有 maxWidth 覆盖，此处做二次保障
-      if (state.editorPaneCollapsed) {
-        const section = document.querySelector('#preview-content > section');
-        if (section) section.style.maxWidth = '900px';
-      }
-    });
+    renderPreview();
     save();
   }
 
