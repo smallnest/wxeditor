@@ -769,7 +769,13 @@
       if (frame) frame.style.width = '';
       if (label) label.textContent = '预览区域（手机预览 · 375px）';
     }
-    renderPreview();
+    void renderPreview().then(() => {
+      // renderPreview 内部已有 maxWidth 覆盖，此处做二次保障
+      if (state.editorPaneCollapsed) {
+        const section = document.querySelector('#preview-content > section');
+        if (section) section.style.maxWidth = '900px';
+      }
+    });
     save();
   }
 
