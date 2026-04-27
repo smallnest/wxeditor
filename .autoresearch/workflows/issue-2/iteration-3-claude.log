@@ -1,0 +1,25 @@
+所有任务已完成。让我提供一份总结。
+
+---
+
+## 修复总结
+
+### 已修复问题
+
+| # | 问题 | 文件 | 修复内容 |
+|---|------|------|----------|
+| 1 | `toggleSensitiveDetection` 未定义 (致命) | `index.js` | 新增 `toggleSensitiveDetection()` 和 `updateSensitiveUI()` 函数，遵循 `toggleScrollSync`/`updateScrollSyncUI` 模式 |
+| 2 | 缺少 `.sensitive-word` CSS (致命) | `index.css` | 添加黄色半透明背景 + 波浪下划线 + `cursor: help` 样式 |
+| 3 | 开关初始 UI 状态未同步 | `index.js` | 在 `init()` 中添加 `updateSensitiveUI()` 调用 |
+| 4 | 词库含过于常见的单字 `'最'` | `sensitive-words.js` | 替换为 `'最好'`、`'最佳'`、`'最强'`、`'最低'`、`'最优'` 五个具体词组 |
+| 5 | 代码风格不一致 | `index.js` | `highlightSensitiveWordsInDOM` 和 `updateMeta` 中 `var` → `const`/`let` |
+| 6 | 匹配结果重叠 | `index.js` | 添加 `if (m.index < lastIndex) continue;` 跳过重叠匹配 |
+| 额外 | 缺少 `removeWords` API | `sensitive-words.js` | 新增 `removeWords()` 方法 |
+
+---
+
+## Learnings
+
+- **模式**: 开关类功能三件套：`toggle*()` 切换状态 + `update*UI()` 同步视觉 + `init()` 中调用初始化。必须完整实现全部三部分，缺一即功能异常。
+- **踩坑**: 审核反馈中 `toggleSensitiveDetection` 未定义是致命 bug，说明实现时缺少端到端验证。后续实现任何事件绑定时，必须确认回调函数已定义。
+- **经验**: 敏感词匹配中的重叠问题容易被忽略——多个词可能匹配同一区域。在 `DOM` 操作前用 `if (m.index < lastIndex) continue` 过滤重叠，可避免 `DOM` 结构错乱。

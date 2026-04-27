@@ -408,6 +408,13 @@ body {
   border: none !important;
 }
 
+/* 敏感词高亮 */
+#preview-content .sensitive-word {
+  background-color: rgba(255, 193, 7, 0.3);
+  border-bottom: 2px wavy #ff9800;
+  cursor: help;
+}
+
 #editor {
   width: 100%;
   flex: 1;

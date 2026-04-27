@@ -177,6 +177,7 @@
   /** @type {Set<string>} blob: URLs created for preview — revoked before each re-render */
   const activePreviewObjectUrls = new Set();
   let turndownService = null;
+  const sensitiveDetector = typeof SensitiveWords !== 'undefined' ? new SensitiveWords() : null;
 
   function revokeAllPreviewObjectUrls() {
     activePreviewObjectUrls.forEach((u) => {
@@ -305,6 +306,7 @@
     settingsPaneCollapsed: false,
     editorPaneCollapsed: false,
     scrollSyncEnabled: true,
+    sensitiveWordsEnabled: true,
   };
 
   // ============ Persistence ============
@@ -320,6 +322,7 @@
         settingsPaneCollapsed: state.settingsPaneCollapsed,
         editorPaneCollapsed: state.editorPaneCollapsed,
         scrollSyncEnabled: state.scrollSyncEnabled,
+        sensitiveWordsEnabled: state.sensitiveWordsEnabled,
       }));
     } catch (e) {}
   }
@@ -348,6 +351,7 @@
       if (typeof parsed.settingsPaneCollapsed === 'boolean') state.settingsPaneCollapsed = parsed.settingsPaneCollapsed;
       if (typeof parsed.editorPaneCollapsed === 'boolean') state.editorPaneCollapsed = parsed.editorPaneCollapsed;
       if (typeof parsed.scrollSyncEnabled === 'boolean') state.scrollSyncEnabled = parsed.scrollSyncEnabled;
+      if (typeof parsed.sensitiveWordsEnabled === 'boolean') state.sensitiveWordsEnabled = parsed.sensitiveWordsEnabled;
       if (state.settings && state.settings.global && state.settings.global.maxWidth == null) {
         state.settings.global.maxWidth = 335;
       }
@@ -398,6 +402,9 @@
     }
     const box = document.getElementById('preview-content');
     if (box) box.innerHTML = html;
+    if (state.sensitiveWordsEnabled && sensitiveDetector && box) {
+      highlightSensitiveWordsInDOM(box);
+    }
     if (state.editorPaneCollapsed) {
       const section = box ? box.querySelector(':scope > section') : null;
       if (section) section.style.maxWidth = '900px';
@@ -441,6 +448,52 @@
     if (statChinese) statChinese.textContent = chineseCount + ' 汉字';
     if (statParagraphs) statParagraphs.textContent = paragraphs + ' 段';
     if (statReading) statReading.textContent = readingTime + ' 分钟阅读';
+
+    // sensitive word count in status bar
+    const statSensitive = document.getElementById('stat-sensitive');
+    if (statSensitive) {
+      if (state.sensitiveWordsEnabled && sensitiveDetector) {
+        const sensitiveMatches = sensitiveDetector.detect(raw);
+        if (sensitiveMatches.length > 0) {
+          statSensitive.textContent = sensitiveMatches.length + ' 个敏感词';
+          statSensitive.style.display = '';
+        } else {
+          statSensitive.style.display = 'none';
+        }
+      } else {
+        statSensitive.style.display = 'none';
+      }
+    }
+  }
+
+  function highlightSensitiveWordsInDOM(root) {
+    if (!state.sensitiveWordsEnabled || !sensitiveDetector) return;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.referenceNode);
+    for (let ni = 0; ni < textNodes.length; ni++) {
+      const node = textNodes[ni];
+      const parent = node.parentElement;
+      if (!parent || parent.tagName === 'CODE' || parent.tagName === 'PRE' || parent.closest('pre,code')) continue;
+      const text = node.textContent;
+      const matches = sensitiveDetector.detect(text);
+      if (matches.length === 0) continue;
+      const fragment = document.createDocumentFragment();
+      let lastIndex = 0;
+      for (let mi = 0; mi < matches.length; mi++) {
+        const m = matches[mi];
+        if (m.index < lastIndex) continue; // skip overlapping matches
+        if (m.index > lastIndex) fragment.appendChild(document.createTextNode(text.slice(lastIndex, m.index)));
+        const span = document.createElement('span');
+        span.className = 'sensitive-word';
+        span.textContent = text.slice(m.index, m.index + m.length);
+        span.title = '敏感词: ' + m.word;
+        fragment.appendChild(span);
+        lastIndex = m.index + m.length;
+      }
+      if (lastIndex < text.length) fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+      node.parentNode.replaceChild(fragment, node);
+    }
   }
 
   // ============ Toast ============
@@ -675,6 +728,20 @@
     state.scrollSyncEnabled = !state.scrollSyncEnabled;
     updateScrollSyncUI();
     save();
+  }
+
+  function updateSensitiveUI() {
+    const track = document.getElementById('sensitive-track');
+    const btn = document.getElementById('sensitive-switch');
+    if (track) track.classList.toggle('on', state.sensitiveWordsEnabled);
+    if (btn) btn.setAttribute('aria-pressed', String(state.sensitiveWordsEnabled));
+  }
+
+  function toggleSensitiveDetection() {
+    state.sensitiveWordsEnabled = !state.sensitiveWordsEnabled;
+    updateSensitiveUI();
+    save();
+    renderPreview();
   }
 
   function setEditorPaneCollapsed(collapsed) {
@@ -1853,6 +1920,10 @@
     document.getElementById('sync-scroll-switch').addEventListener('click', () => {
       toggleScrollSync();
     });
+    var sensitiveSwitch = document.getElementById('sensitive-switch');
+    if (sensitiveSwitch) {
+      sensitiveSwitch.addEventListener('click', toggleSensitiveDetection);
+    }
     document.getElementById('btn-sample').addEventListener('click', () => {
       void (async () => {
         sampleMdPromise = null;
@@ -1922,6 +1993,7 @@
     bindTopbar();
     bindScrollSync();
     updateScrollSyncUI();
+    updateSensitiveUI();
     buildSettingsPanel();
     updateThemeSelect();
     updateCodeThemeSelect();

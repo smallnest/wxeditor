@@ -1,0 +1,287 @@
+[0m
+> build · deepseek-v4-flash
+[0m
+[0m→ [0mRead .
+[0m
+[0m$ [0mgit log --oneline -1 feature/issue-2
+ac16ad2 使用 Prettier 格式化 Markdown
+[0m
+[0m→ [0mRead index.html
+[0m→ [0mRead index.js
+[0m→ [0mRead index.renderer.js
+[0m→ [0mRead index.css
+[0m→ [0mRead .autoresearch/workflows/issue-2
+[0m→ [0mRead .autoresearch/workflows/issue-2/log.md
+[0m→ [0mRead .autoresearch/workflows/issue-2/progress.md
+[0m→ [0mRead index.js[90m [offset=1310][0m
+[0m
+[0m# [0mTodos
+[ ] Create sensitive-words.js - detection engine with word list and detect API
+[ ] Modify index.html - add script tag, toggle button in toolbar, status bar element
+[ ] Modify index.js - add state, persistence, DOM highlighting, toggle binding, status bar update
+[ ] Modify index.css - add .sensitive-word styles
+[ ] Verify the implementation by checking the code for correctness
+[0m
+[0m# [0mTodos
+[ ] Create sensitive-words.js - detection engine with word list and detect API
+[ ] Modify index.html - add script tag, toggle button in toolbar, status bar element
+[ ] Modify index.js - add state, persistence, DOM highlighting, toggle binding, status bar update
+[ ] Modify index.css - add .sensitive-word styles
+[ ] Verify the implementation by checking the code for correctness
+[0m
+实现计划已制定，开始编码。
+[0m← [0mWrite sensitive-words.js
+Wrote file successfully.
+[0m
+[0m# [0mTodos
+[x] Create sensitive-words.js - detection engine with word list and detect API
+[ ] Modify index.html - add script tag, toggle button in toolbar, status bar element
+[ ] Modify index.js - add state, persistence, DOM highlighting, toggle binding, status bar update
+[ ] Modify index.css - add .sensitive-word styles
+[ ] Verify the implementation by checking the code for correctness
+[0m
+[0m← [0mEdit index.html
+Index: /Users/smallnest/workspace/mdeditor/index.html
+===================================================================
+--- /Users/smallnest/workspace/mdeditor/index.html
++++ /Users/smallnest/workspace/mdeditor/index.html
+@@ -86,8 +86,14 @@
+ </div>
+ 
+ <span class="spacer"></span>
+ 
++<button type="button" class="sync-switch-btn" id="sensitive-switch" title="检测并标记敏感词" aria-pressed="true">
++  <span class="sync-switch-label">敏感词检测</span>
++  <span class="sync-switch-track" id="sensitive-track"><span class="sync-switch-thumb"></span></span>
++</button>
++<span class="divider"></span>
++
+ <button type="button" class="sync-switch-btn" id="sync-scroll-switch" title="编辑区与预览区滚动同步" aria-pressed="true">
+   <span class="sync-switch-label">滚动同步</span>
+   <span class="sync-switch-track" id="sync-scroll-track"><span class="sync-switch-thumb"></span></span>
+ </button>
+
+[0m
+[0m← [0mEdit index.html
+Index: /Users/smallnest/workspace/mdeditor/index.html
+===================================================================
+--- /Users/smallnest/workspace/mdeditor/index.html
++++ /Users/smallnest/workspace/mdeditor/index.html
+@@ -130,8 +130,10 @@
+       <span class="sep">·</span>
+       <span id="stat-paragraphs">0 段</span>
+       <span class="sep">·</span>
+       <span id="stat-reading">0 分钟阅读</span>
++      <span class="sep">·</span>
++      <span id="stat-sensitive"></span>
+     </div>
+   </div>
+ </section>
+ 
+
+[0m
+[0m← [0mEdit index.html
+Index: /Users/smallnest/workspace/mdeditor/index.html
+===================================================================
+--- /Users/smallnest/workspace/mdeditor/index.html
++++ /Users/smallnest/workspace/mdeditor/index.html
+@@ -183,8 +183,9 @@
+   <div id="toast" class="toast">提示</div>
+ 
+   <script src="index.presets.js?v=20260421"></script>
+   <script src="index.renderer.js?v=20260421"></script>
++  <script src="sensitive-words.js?v=20260427"></script>
+   <script src="index.js?v=20260421"></script>
+ 
+ 
+ </body></html>
+
+[0m
+[0m# [0mTodos
+[x] Create sensitive-words.js - detection engine with word list and detect API
+[x] Modify index.html - add script tag, toggle button in toolbar, status bar element
+[ ] Modify index.js - add state, persistence, DOM highlighting, toggle binding, status bar update
+[ ] Modify index.css - add .sensitive-word styles
+[ ] Verify the implementation by checking the code for correctness
+[0m
+[0m← [0mEdit index.js
+Index: /Users/smallnest/workspace/mdeditor/index.js
+===================================================================
+--- /Users/smallnest/workspace/mdeditor/index.js
++++ /Users/smallnest/workspace/mdeditor/index.js
+@@ -176,8 +176,9 @@
+ const imageCompressor = new ImageCompressor({ maxWidth: 1920, maxHeight: 1920, quality: 0.85 });
+ /** @type {Set<string>} blob: URLs created for preview — revoked before each re-render */
+ const activePreviewObjectUrls = new Set();
+ let turndownService = null;
++const sensitiveDetector = typeof SensitiveWords !== 'undefined' ? new SensitiveWords() : null;
+ 
+ function revokeAllPreviewObjectUrls() {
+   activePreviewObjectUrls.forEach((u) => {
+     try { URL.revokeObjectURL(u); } catch (_e) {}
+
+[0m
+First, add the `sensitiveDetector` instance after the `imageStore` and `imageCompressor` initialization:
+[0m← [0mEdit index.js
+Index: /Users/smallnest/workspace/mdeditor/index.js
+===================================================================
+--- /Users/smallnest/workspace/mdeditor/index.js
++++ /Users/smallnest/workspace/mdeditor/index.js
+@@ -305,8 +305,9 @@
+   imageCopyMode: 'wechat_compat',
+   settingsPaneCollapsed: false,
+   editorPaneCollapsed: false,
+   scrollSyncEnabled: true,
++  sensitiveWordsEnabled: true,
+ };
+ 
+ // ============ Persistence ============
+ function save() {
+
+[0m
+[0m← [0mEdit index.js
+Index: /Users/smallnest/workspace/mdeditor/index.js
+===================================================================
+--- /Users/smallnest/workspace/mdeditor/index.js
++++ /Users/smallnest/workspace/mdeditor/index.js
+@@ -321,8 +321,9 @@
+       imageCopyMode: state.imageCopyMode,
+       settingsPaneCollapsed: state.settingsPaneCollapsed,
+       editorPaneCollapsed: state.editorPaneCollapsed,
+       scrollSyncEnabled: state.scrollSyncEnabled,
++      sensitiveWordsEnabled: state.sensitiveWordsEnabled,
+     }));
+   } catch (e) {}
+ }
+ 
+
+[0m
+[0m← [0mEdit index.js
+Index: /Users/smallnest/workspace/mdeditor/index.js
+===================================================================
+--- /Users/smallnest/workspace/mdeditor/index.js
++++ /Users/smallnest/workspace/mdeditor/index.js
+@@ -350,8 +350,9 @@
+ if (parsed.imageCopyMode) state.imageCopyMode = parsed.imageCopyMode;
+ if (typeof parsed.settingsPaneCollapsed === 'boolean') state.settingsPaneCollapsed = parsed.settingsPaneCollapsed;
+ if (typeof parsed.editorPaneCollapsed === 'boolean') state.editorPaneCollapsed = parsed.editorPaneCollapsed;
+ if (typeof parsed.scrollSyncEnabled === 'boolean') state.scrollSyncEnabled = parsed.scrollSyncEnabled;
++if (typeof parsed.sensitiveWordsEnabled === 'boolean') state.sensitiveWordsEnabled = parsed.sensitiveWordsEnabled;
+ if (state.settings && state.settings.global && state.settings.global.maxWidth == null) {
+   state.settings.global.maxWidth = 335;
+ }
+ return true;
+
+[0m
+[0m→ [0mRead index.js[90m [offset=389, limit=60][0m
+[0m
+[0m← [0mEdit index.js
+Index: /Users/smallnest/workspace/mdeditor/index.js
+===================================================================
+--- /Users/smallnest/workspace/mdeditor/index.js
++++ /Users/smallnest/workspace/mdeditor/index.js
+@@ -444,10 +444,55 @@
+   if (statChars) statChars.textContent = chars + ' 字';
+   if (statChinese) statChinese.textContent = chineseCount + ' 汉字';
+   if (statParagraphs) statParagraphs.textContent = paragraphs + ' 段';
+   if (statReading) statReading.textContent = readingTime + ' 分钟阅读';
++
++  // sensitive word count in status bar
++  const statSensitive = document.getElementById('stat-sensitive');
++  if (statSensitive) {
++    if (state.sensitiveWordsEnabled && sensitiveDetector) {
++      var sensitiveMatches = sensitiveDetector.detect(raw);
++      if (sensitiveMatches.length > 0) {
++        statSensitive.textContent = sensitiveMatches.length + ' 个敏感词';
++        statSensitive.style.display = '';
++      } else {
++        statSensitive.style.display = 'none';
++      }
++    } else {
++      statSensitive.style.display = 'none';
++    }
++  }
+ }
+ 
++function highlightSensitiveWordsInDOM(root) {
++  if (!state.sensitiveWordsEnabled || !sensitiveDetector) return;
++  var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
++  var textNodes = [];
++  while (walker.nextNode()) textNodes.push(walker.referenceNode);
++  for (var ni = 0; ni < textNodes.length; ni++) {
++    var node = textNodes[ni];
++    var parent = node.parentElement;
++    if (!parent || parent.tagName === 'CODE' || parent.tagName === 'PRE' || parent.closest('pre,code')) continue;
++    var text = node.textContent;
++    var matches = sensitiveDetector.detect(text);
++    if (matches.length === 0) continue;
++    var fragment = document.createDocumentFragment();
++    var lastIndex = 0;
++    for (var mi = 0; mi < matches.length; mi++) {
++      var m = matches[mi];
++      if (m.index > lastIndex) fragment.appendChild(document.createTextNode(text.slice(lastIndex, m.index)));
++      var span = document.createElement('span');
++      span.className = 'sensitive-word';
++      span.textContent = text.slice(m.index, m.index + m.length);
++      span.title = '敏感词: ' + m.word;
++      fragment.appendChild(span);
++      lastIndex = m.index + m.length;
++    }
++    if (lastIndex < text.length) fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
++    node.parentNode.replaceChild(fragment, node);
++  }
++}
++
+ // ============ Toast ============
+ let toastTimer;
+ function toast(msg, durationMs) {
+   const el = document.getElementById('toast');
+
+[0m
+Add the DOM-based sensitive word highlighting function after `updateMeta`:
+[0m← [0mEdit index.js
+Index: /Users/smallnest/workspace/mdeditor/index.js
+===================================================================
+--- /Users/smallnest/workspace/mdeditor/index.js
++++ /Users/smallnest/workspace/mdeditor/index.js
+@@ -401,8 +401,11 @@
+   console.warn('processImageProtocol', e);
+ }
+ const box = document.getElementById('preview-content');
+ if (box) box.innerHTML = html;
++if (state.sensitiveWordsEnabled && sensitiveDetector && box) {
++  highlightSensitiveWordsInDOM(box);
++}
+ if (state.editorPaneCollapsed) {
+   const section = box ? box.querySelector(':scope > section') : null;
+   if (section) section.style.maxWidth = '900px';
+ }
+
+[0m
+[0m→ [0mRead index.js[90m [offset=1850, limit=30][0m
+[0m→ [0mRead index.js[90m [offset=1900, limit=30][0m
+[0m
+[0m← [0mEdit index.js
+Index: /Users/smallnest/workspace/mdeditor/index.js
+===================================================================
+--- /Users/smallnest/workspace/mdeditor/index.js
++++ /Users/smallnest/workspace/mdeditor/index.js
+@@ -1904,8 +1904,12 @@
+ });
+ document.getElementById('sync-scroll-switch').addEventListener('click', () => {
+   toggleScrollSync();
+ });
++var sensitiveSwitch = document.getElementById('sensitive-switch');
++if (sensitiveSwitch) {
++  sensitiveSwitch.addEventListener('click', toggleSensitiveDetection);
++}
+ document.getElementById('btn-sample').addEventListener('click', () => {
+   void (async () => {
+     sampleMdPromise = null;
+     const md = await loadSampleMd();
+
+[0m
+[0m→ [0mRead index.js[90m [offset=667, limit=20][0m
+[0m✱ [0mGrep "function toggleScrollSync|function updateScrollSyncUI|function setEditorPaneCollapsed"[90m 3 matches[0m
+[0m→ [0mRead index.js[90m [offset=719, limit=20][0m
+[91m[1mError: [0mError from provider (DeepSeek): The `reasoning_content` in the thinking mode must be passed back to the API.

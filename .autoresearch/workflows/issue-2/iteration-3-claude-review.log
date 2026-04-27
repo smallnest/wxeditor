@@ -1,0 +1,180 @@
+我已经收集到所有必要的信息。现在我来整理审核报告。
+
+## 审核报告
+
+### Issue
+- 编号: #2
+- 标题: 敏感词检测（基础版）
+- 迭代次数: 3
+
+---
+
+### 总体评价
+
+**评分: 45/100**
+
+实现具备了基本框架（敏感词检测引擎、DOM 高亮、状态栏显示、开关按钮），但存在一个致命的功能缺陷（开关回调未定义导致运行时报错），以及缺少 CSS 样式和初始化逻辑等多个遗漏。
+
+---
+
+### 严重问题 (必须修复)
+
+#### 问题 1: `toggleSensitiveDetection` 函数未定义 — 运行时报错
+
+**位置**: `index.js:1910`
+
+**问题描述**:
+按钮 `#sensitive-switch` 绑定了 `toggleSensitiveDetection` 回调，但整个 `index.js` 中没有定义此函数。用户点击"敏感词检测"开关时会抛出 `ReferenceError: toggleSensitiveDetection is not defined`，导致开关完全不可用。
+
+**代码片段**:
+```js
+// index.js:1910
+sensitiveSwitch.addEventListener('click', toggleSensitiveDetection);
+// toggleSensitiveDetection 从未定义
+```
+
+**建议修复**:
+参照现有 `toggleScrollSync()` + `updateScrollSyncUI()` 模式，添加：
+```js
+function updateSensitiveUI() {
+  var track = document.getElementById('sensitive-track');
+  var btn = document.getElementById('sensitive-switch');
+  if (track) track.classList.toggle('on', state.sensitiveWordsEnabled);
+  if (btn) btn.setAttribute('aria-pressed', String(state.sensitiveWordsEnabled));
+}
+
+function toggleSensitiveDetection() {
+  state.sensitiveWordsEnabled = !state.sensitiveWordsEnabled;
+  updateSensitiveUI();
+  save();
+  renderPreview();
+}
+```
+并在 `init()` 中调用 `updateSensitiveUI()` 以同步初始 UI 状态。
+
+**原因**: 这是一个致命 bug — 开关按钮完全无法使用，点击即崩溃。
+
+---
+
+#### 问题 2: 缺少 `.sensitive-word` CSS 样式
+
+**位置**: `index.css`（缺失）
+
+**问题描述**:
+`highlightSensitiveWordsInDOM` 函数给匹配词包裹了 `<span class="sensitive-word">` 元素，但 `index.css` 中没有定义 `.sensitive-word` 样式。这意味着高亮在视觉上完全不可见。
+
+**建议修复**:
+在 `index.css` 中添加：
+```css
+.sensitive-word {
+  background-color: rgba(255, 193, 7, 0.3);
+  border-bottom: 2px wavy #ff9800;
+  cursor: help;
+}
+```
+
+**原因**: 没有 CSS 样式，DOM 高亮对用户完全透明，功能形同虚设。
+
+---
+
+### 一般问题 (建议修复)
+
+#### 问题 3: 开关初始 UI 状态未同步
+
+**位置**: `index.js:1978-1980` (init 函数)
+
+**问题描述**:
+`init()` 函数中调用了 `updateScrollSyncUI()` 来同步滚动开关的初始状态，但没有对应的 `updateSensitiveUI()` 调用。HTML 中 `aria-pressed="true"` 是硬编码的，如果从 localStorage 恢复 `sensitiveWordsEnabled: false`，UI 状态与实际状态会不一致。
+
+**建议修复**:
+在 `init()` 中添加 `updateSensitiveUI()` 调用（前提是先实现该函数）。
+
+---
+
+#### 问题 4: 敏感词列表包含过于常见的单字
+
+**位置**: `sensitive-words.js:8`
+
+**问题描述**:
+默认词库中包含 `最`、`加V` 等过于常见的单字/短词。在中文文本中，"最" 是高频语法成分（"最好的"、"最重要的是"），会产生大量误报。
+
+**代码片段**:
+```js
+'最', '第一', '唯一', '首创',
+```
+
+**建议修复**:
+将 `'最'` 改为更具体的组合如 `'最好'`、`'最佳'`、`'最强'`，或移除单字词，保留 ≥ 2 字的词组。
+
+---
+
+#### 问题 5: 检测算法使用朴素字符串匹配 — 性能隐患
+
+**位置**: `sensitive-words.js:30-48`
+
+**问题描述**:
+`detect()` 方法对每个词调用 `text.indexOf()` 逐一遍历，时间复杂度为 O(W * L)，W 为词数，L 为文本长度。当词库增大时（如加载外部词库 1000+ 词），每次输入触发检测会有明显卡顿。
+
+**建议改进**:
+对于基础版来说当前实现可以接受，但如果后续扩展词库，建议使用 Aho-Corasick 自动机算法，将多模式匹配优化到 O(L) 时间复杂度。
+
+---
+
+### 建议改进 (可选)
+
+- **暴露 `removeWords` 方法**: 当前只有 `addWords`，缺少移除词的 API，不便于用户自定义词库。
+- **重复高亮问题**: `highlightSensitiveWordsInDOM` 中的 `detect()` 返回的匹配结果可能存在重叠区域（如文本"第一"匹配了"第一"，同时"最"也在其他位置匹配），当前的 `fragment` 拼接逻辑没有处理重叠匹配，可能导致 DOM 结构错乱。建议在 detect 中增加重叠检测逻辑。
+- **代码风格一致性**: `highlightSensitiveWordsInDOM` 使用 `var` 声明，而同文件其他新增代码使用 `const`/`let`。建议统一为 `const`/`let`（同文件大部分代码使用 ES6+ 语法）。
+
+---
+
+### 实现者自检确认
+- [x] 实现者已执行编译/类型检查（N/A - 纯 JS）
+- [ ] 实现者已执行 Lint 检查（未确认）
+- [ ] 实现者已运行相关测试（无测试基础设施）
+- [ ] 实现者已确认测试覆盖（无测试）
+
+> 注：项目为纯前端应用，无测试基础设施。测试质量维度已豁免。
+
+---
+
+### 评分计算
+
+| 维度 | 得分 | 权重 | 加权分 |
+|------|------|------|--------|
+| 正确性 | 45 | 35% | 15.75 |
+| 测试质量 | 100 (豁免) | 25% | 25.00 |
+| 代码质量 | 55 | 20% | 11.00 |
+| 安全性 | 85 | 10% | 8.50 |
+| 性能 | 75 | 10% | 7.50 |
+
+**总分: 67.25 → 四舍五入 67/100**
+
+> 修正：因严重问题 #1（函数未定义）属于致命功能缺陷（点击即崩溃），正确性得分应更低。重新评估：
+> - 正确性: 30（致命 bug 扣大分） → 30 × 0.35 = 10.5
+> - 测试质量: 100 (豁免) → 25
+> - 代码质量: 55 → 11
+> - 安全性: 85 → 8.5
+> - 性能: 75 → 7.5
+> 
+> **总分: 62.5 → 63/100**
+
+---
+
+### 审核结论
+
+- [x] 需要修改 - 存在必须修复的问题
+
+**下一步行动**:
+1. **必须**: 定义 `toggleSensitiveDetection` 和 `updateSensitiveUI` 函数，并在 `init()` 中调用初始化
+2. **必须**: 在 `index.css` 中添加 `.sensitive-word` 样式
+3. **建议**: 优化默认词库，移除过于常见的单字词
+4. **建议**: 处理匹配结果重叠问题
+
+---
+
+## Learnings
+
+- **模式**: 项目中开关类功能遵循固定模式：`toggle*()` 函数切换状态 + `update*UI()` 同步视觉 + `init()` 中调用 UI 同步。新功能必须完整实现这三部分。
+- **踩坑**: 本次实现只写了"一半"——引擎和 DOM 高亮都有了，但开关回调函数和 CSS 样式遗漏，说明实现者缺少端到端验证（未在浏览器中实际点击测试）。
+- **经验**: 纯前端项目无自动化测试，审核时必须手动追踪事件绑定→回调定义→UI 更新的完整链路，确认每一环都存在。

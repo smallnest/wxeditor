@@ -87,6 +87,12 @@
 
       <span class="spacer"></span>
 
+      <button type="button" class="sync-switch-btn" id="sensitive-switch" title="检测并标记敏感词" aria-pressed="true">
+        <span class="sync-switch-label">敏感词检测</span>
+        <span class="sync-switch-track" id="sensitive-track"><span class="sync-switch-thumb"></span></span>
+      </button>
+      <span class="divider"></span>
+
       <button type="button" class="sync-switch-btn" id="sync-scroll-switch" title="编辑区与预览区滚动同步" aria-pressed="true">
         <span class="sync-switch-label">滚动同步</span>
         <span class="sync-switch-track" id="sync-scroll-track"><span class="sync-switch-thumb"></span></span>
@@ -125,6 +131,8 @@
             <span id="stat-paragraphs">0 段</span>
             <span class="sep">·</span>
             <span id="stat-reading">0 分钟阅读</span>
+            <span class="sep">·</span>
+            <span id="stat-sensitive"></span>
           </div>
         </div>
       </section>
@@ -176,6 +184,7 @@
 
   <script src="index.presets.js?v=20260421"></script>
   <script src="index.renderer.js?v=20260421"></script>
+  <script src="sensitive-words.js?v=20260427"></script>
   <script src="index.js?v=20260421"></script>
 
 
