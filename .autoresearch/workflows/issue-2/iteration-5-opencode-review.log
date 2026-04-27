@@ -1,0 +1,355 @@
+[0m
+> build · deepseek-v4-flash
+[0m
+[0m$ [0mcd /Users/smallnest/workspace/mdeditor && git log --all --oneline -30
+ac16ad2 使用 Prettier 格式化 Markdown
+da10e74 Merge pull request #16 from smallnest/feature/issue-1
+d6559c8 feat: implement issue #1 - 字数统计与阅读时长
+a2c1b02 update readme
+9b67a22 Show vertical scrollbars in editor and preview areas
+709c73b Add brush-stroke SVG heading decorations with 9 styles and apply to 20 themes
+63db77a Add ink blur effect checkbox for paragraph
+eca7bc4 Add font-weight setting for paragraph with default 400
+4930898 Add SVG header banners for spring (willow) and sakura themes
+b16d5c5 Add spring and sakura themes with botanical SVG decorations
+e9cc045 Diversify theme font families to match brand styles
+0299c33 Improve font fallbacks and add new font families
+caffab4 Add PDF export button with print stylesheet
+8bfa0ad Add image copy modes for WeChat export
+b0f77bc Refine WeChat copy flow and default reading settings
+a04065b Update README to match current feature set
+64757c3 Add selectable code themes and analytics script
+d9c8c76 Refine code block styling and add dark presets
+2a663a5 Add custom unicode heading prefixes for h2-h4
+ec2b642 Add WeChat theme and sort theme dropdown with Chinese names first
+c9d1e34 Add 18 new SVG heading decorations and diversify batch2 theme presets
+3e524c5 Add 56 company-inspired themes with SVG heading decorations
+94bb094 Add markdown formatter, link-to-footnote tool, and group dividers in toolbar
+e25ce14 Add footnote conversion for external links and fix preview re-render on toggle
+d0f7370 Switch preview to 1024px web mode when editor pane is collapsed
+a9bb1e5 Add Markdown editor for WeChat public accounts
+2a8c8e0 Initial commit
+[0m
+[0m$ [0mcd /Users/smallnest/workspace/mdeditor && git branch -a
+* feature/issue-2
+  master
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/feature/issue-1
+  remotes/origin/master
+[0m
+[0m→ [0mRead .
+[0m
+[0m$ [0mcd /Users/smallnest/workspace/mdeditor && git log feature/issue-2 --oneline -10
+ac16ad2 使用 Prettier 格式化 Markdown
+da10e74 Merge pull request #16 from smallnest/feature/issue-1
+d6559c8 feat: implement issue #1 - 字数统计与阅读时长
+a2c1b02 update readme
+9b67a22 Show vertical scrollbars in editor and preview areas
+709c73b Add brush-stroke SVG heading decorations with 9 styles and apply to 20 themes
+63db77a Add ink blur effect checkbox for paragraph
+eca7bc4 Add font-weight setting for paragraph with default 400
+4930898 Add SVG header banners for spring (willow) and sakura themes
+b16d5c5 Add spring and sakura themes with botanical SVG decorations
+[0m
+[0m$ [0mcd /Users/smallnest/workspace/mdeditor && git diff master...feature/issue-2
+(no output)
+[0m
+[0m$ [0mcd /Users/smallnest/workspace/mdeditor && git diff master...feature/issue-2 --stat
+(no output)
+[0m
+[0m$ [0mcd /Users/smallnest/workspace/mdeditor && git status
+On branch feature/issue-2
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   index.css
+	modified:   index.html
+	modified:   index.js
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.autoresearch/workflows/issue-2/
+	sensitive-words.js
+
+no changes added to commit (use "git add" and/or "git commit -a")
+[0m
+[0m$ [0mcd /Users/smallnest/workspace/mdeditor && git stash list
+(no output)
+[0m
+[0m→ [0mRead sensitive-words.js
+[0m
+[0m$ [0mcd /Users/smallnest/workspace/mdeditor && git diff index.html
+diff --git a/index.html b/index.html
+index 5b90c4b..9c9e5a1 100644
+--- a/index.html
++++ b/index.html
+@@ -87,6 +87,12 @@
+ 
+       <span class="spacer"></span>
+ 
++      <button type="button" class="sync-switch-btn" id="sensitive-switch" title="检测并标记敏感词" aria-pressed="true">
++        <span class="sync-switch-label">敏感词检测</span>
++        <span class="sync-switch-track" id="sensitive-track"><span class="sync-switch-thumb"></span></span>
++      </button>
++      <span class="divider"></span>
++
+       <button type="button" class="sync-switch-btn" id="sync-scroll-switch" title="编辑区与预览区滚动同步" aria-pressed="true">
+         <span class="sync-switch-label">滚动同步</span>
+         <span class="sync-switch-track" id="sync-scroll-track"><span class="sync-switch-thumb"></span></span>
+@@ -125,6 +131,8 @@
+             <span id="stat-paragraphs">0 段</span>
+             <span class="sep">·</span>
+             <span id="stat-reading">0 分钟阅读</span>
++            <span class="sep">·</span>
++            <span id="stat-sensitive"></span>
+           </div>
+         </div>
+       </section>
+@@ -176,6 +184,7 @@
+ 
+   <script src="index.presets.js?v=20260421"></script>
+   <script src="index.renderer.js?v=20260421"></script>
++  <script src="sensitive-words.js?v=20260427"></script>
+   <script src="index.js?v=20260421"></script>
+[0m
+[0m$ [0mcd /Users/smallnest/workspace/mdeditor && git diff index.js
+diff --git a/index.js b/index.js
+index c8ade93..0b75552 100644
+--- a/index.js
++++ b/index.js
+@@ -177,6 +177,7 @@
+   /** @type {Set<string>} blob: URLs created for preview — revoked before each re-render */
+   const activePreviewObjectUrls = new Set();
+   let turndownService = null;
++  const sensitiveDetector = typeof SensitiveWords !== 'undefined' ? new SensitiveWords() : null;
+ 
+   function revokeAllPreviewObjectUrls() {
+     activePreviewObjectUrls.forEach((u) => {
+@@ -305,6 +306,7 @@
+     settingsPaneCollapsed: false,
+     editorPaneCollapsed: false,
+     scrollSyncEnabled: true,
++    sensitiveWordsEnabled: true,
+   };
+ 
+   // ============ Persistence ============
+@@ -320,6 +322,7 @@
+         settingsPaneCollapsed: state.settingsPaneCollapsed,
+         editorPaneCollapsed: state.editorPaneCollapsed,
+         scrollSyncEnabled: state.scrollSyncEnabled,
++        sensitiveWordsEnabled: state.sensitiveWordsEnabled,
+       }));
+     } catch (e) {}
+   }
+@@ -348,6 +351,7 @@
+       if (typeof parsed.settingsPaneCollapsed === 'boolean') state.settingsPaneCollapsed = parsed.settingsPaneCollapsed;
+       if (typeof parsed.editorPaneCollapsed === 'boolean') state.editorPaneCollapsed = parsed.editorPaneCollapsed;
+       if (typeof parsed.scrollSyncEnabled === 'boolean') state.scrollSyncEnabled = parsed.scrollSyncEnabled;
++      if (typeof parsed.sensitiveWordsEnabled === 'boolean') state.sensitiveWordsEnabled = parsed.sensitiveWordsEnabled;
+       if (state.settings && state.settings.global && state.settings.global.maxWidth == null) {
+         state.settings.global.maxWidth = 335;
+       }
+@@ -398,6 +402,9 @@
+     }
+     const box = document.getElementById('preview-content');
+     if (box) box.innerHTML = html;
++    if (state.sensitiveWordsEnabled && sensitiveDetector && box) {
++      highlightSensitiveWordsInDOM(box);
++    }
+     if (state.editorPaneCollapsed) {
+       const section = box ? box.querySelector(':scope > section') : null;
+       if (section) section.style.maxWidth = '900px';
+@@ -441,6 +448,52 @@
+     if (statChinese) statChinese.textContent = chineseCount + ' 汉字';
+     if (statParagraphs) statParagraphs.textContent = paragraphs + ' 段';
+     if (statReading) statReading.textContent = readingTime + ' 分钟阅读';
++
++    // sensitive word count in status bar
++    const statSensitive = document.getElementById('stat-sensitive');
++    if (statSensitive) {
++      if (state.sensitiveWordsEnabled && sensitiveDetector) {
++        const sensitiveMatches = sensitiveDetector.detect(raw);
++        if (sensitiveMatches.length > 0) {
++          statSensitive.textContent = sensitiveMatches.length + ' 个敏感词';
++          statSensitive.style.display = '';
++        } else {
++          statSensitive.style.display = 'none';
++        }
++      } else {
++        statSensitive.style.display = 'none';
++      }
++    }
++  }
++
++  function highlightSensitiveWordsInDOM(root) {
++    if (!state.sensitiveWordsEnabled || !sensitiveDetector) return;
++    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
++    const textNodes = [];
++    while (walker.nextNode()) textNodes.push(walker.referenceNode);
++    for (let ni = 0; ni < textNodes.length; ni++) {
++      const node = textNodes[ni];
++      const parent = node.parentElement;
++      if (!parent || parent.tagName === 'CODE' || parent.tagName === 'PRE' || parent.closest('pre,code')) continue;
++      const text = node.textContent;
++      const matches = sensitiveDetector.detect(text);
++      if (matches.length === 0) continue;
++      const fragment = document.createDocumentFragment();
++      let lastIndex = 0;
++      for (let mi = 0; mi < matches.length; mi++) {
++        const m = matches[mi];
++        if (m.index < lastIndex) continue; // skip overlapping matches
++        if (m.index > lastIndex) fragment.appendChild(document.createTextNode(text.slice(lastIndex, m.index)));
++        const span = document.createElement('span');
++        span.className = 'sensitive-word';
++        span.textContent = text.slice(m.index, m.index + m.length);
++        span.title = '敏感词: ' + m.word;
++        fragment.appendChild(span);
++        lastIndex = m.index + m.length;
++      }
++      if (lastIndex < text.length) fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
++      node.parentNode.replaceChild(fragment, node);
++    }
+   }
+ 
+   // ============ Toast ============
+@@ -677,6 +730,20 @@
+     save();
+   }
+ 
++  function updateSensitiveUI() {
++    const track = document.getElementById('sensitive-track');
++    const btn = document.getElementById('sensitive-switch');
++    if (track) track.classList.toggle('on', state.sensitiveWordsEnabled);
++    if (btn) btn.setAttribute('aria-pressed', String(state.sensitiveWordsEnabled));
++  }
++
++  function toggleSensitiveDetection() {
++    state.sensitiveWordsEnabled = !state.sensitiveWordsEnabled;
++    updateSensitiveUI();
++    save();
++    renderPreview();
++  }
++
+   function setEditorPaneCollapsed(collapsed) {
+     state.editorPaneCollapsed = collapsed;
+     const main = document.querySelector('.main');
+@@ -1853,6 +1920,10 @@
+     document.getElementById('sync-scroll-switch').addEventListener('click', () => {
+       toggleScrollSync();
+     });
++    var sensitiveSwitch = document.getElementById('sensitive-switch');
++    if (sensitiveSwitch) {
++      sensitiveSwitch.addEventListener('click', toggleSensitiveDetection);
++    }
+     document.getElementById('btn-sample').addEventListener('click', () => {
+       void (async () => {
+         sampleMdPromise = null;
+@@ -1922,6 +1993,7 @@
+     bindTopbar();
+     bindScrollSync();
+     updateScrollSyncUI();
++    updateSensitiveUI();
+     buildSettingsPanel();
+     updateThemeSelect();
+     updateCodeThemeSelect();
+[0m
+[0m$ [0mcd /Users/smallnest/workspace/mdeditor && git diff index.css
+diff --git a/index.css b/index.css
+index 57ab9c9..838cbb1 100644
+--- a/index.css
++++ b/index.css
+@@ -408,6 +408,13 @@ body {
+   border: none !important;
+ }
+ 
++/* 敏感词高亮 */
++#preview-content .sensitive-word {
++  background-color: rgba(255, 193, 7, 0.3);
++  border-bottom: 2px wavy #ff9800;
++  cursor: help;
++}
++
+ #editor {
+   width: 100%;
+   flex: 1;
+[0m
+[0m✱ [0mGlob ".autoresearch/workflows/issue-2/**"[90m in . · 16 matches[0m
+[0m✱ [0mGlob "**/progress.md"[90m in . · 2 matches[0m
+[0m✱ [0mGlob "**/CLAUDE.md"[90m in . · 0 matches[0m
+[0m→ [0mRead .autoresearch/workflows/issue-2/progress.md
+[0m→ [0mRead .autoresearch/workflows/issue-2/planning.log
+[0m→ [0mRead .autoresearch/workflows/issue-2/log.md
+[0m→ [0mRead .autoresearch/workflows/issue-2/iteration-2-opencode-review.log
+[0m→ [0mRead .autoresearch/workflows/issue-2/iteration-3-claude-review.log
+[0m→ [0mRead .autoresearch/workflows/issue-2/.last_score
+[0m→ [0mRead .autoresearch/workflows/issue-2/iteration-4-codex-review.log
+[0m→ [0mRead .autoresearch/workflows/issue-2/iteration-5-opencode-review.log
+[0m→ [0mRead index.js[90m [offset=175, limit=5][0m
+[0m→ [0mRead index.js[90m [offset=680, limit=20][0m
+[0m→ [0mRead index.js[90m [offset=1920, limit=120][0m
+Now let me read the relevant sections of the main files to fully assess the implementation:
+[0m✱ [0mGrep "function toggleScrollSync\b|function updateScrollSyncUI"[90m in . · 2 matches[0m
+[0m→ [0mRead index.html[90m [offset=80, limit=60][0m
+Now let me look at how the scroll sync toggle was implemented for consistency check:
+现在我已经有了完整的了解。这是我的审核报告：
+
+## 审核报告
+
+### Issue
+- 编号: #2
+- 标题: 敏感词检测（基础版）
+- 当前迭代: 5
+
+### 总体评价
+**评分: 88/100**
+
+实现完整，包含敏感词检测引擎、DOM 高亮、开关控件、状态栏计数、持久化，所有之前迭代反馈的问题（toggle 回调缺失、CSS 遗漏、init 未同步 UI）均已修复，事件绑定→回调→UI 更新链路完整。
+
+### 各维度评分
+
+| 维度 | 得分 | 权重 | 加权分 | 说明 |
+|------|------|------|--------|------|
+| 正确性 | 85 | 35% | 29.75 | 功能完整实现；状态栏计数与 DOM 高亮在重叠词场景可能不一致；DOM walker 跨节点词无法检出 |
+| 测试质量 | 90 | 25% | 22.50 | 项目无测试基础设施，测试维度豁免；`sensitive-words.js` 纯逻辑模块高度可测试，建议补充测试 |
+| 代码质量 | 90 | 20% | 18.00 | 命名清晰，结构完整，严格遵守项目 toggle 模式；`sensitive-words.js` 内部 `var` 与项目中 `const/let` 混用 |
+| 安全性 | 100 | 10% | 10.00 | 使用 `textContent` 和 `createTextNode` 安全创建 DOM，无 XSS；无注入风险 |
+| 性能 | 95 | 10% | 9.50 | O(W*L) 朴素匹配对当前 25 词词库够用；每次渲染全量重扫，大型文档高频输入时可考虑防抖 |
+
+### 严重问题 (必须修复)
+无。
+
+### 一般问题 (建议修复)
+
+#### 1. 状态栏计数可能多于实际高亮数
+**位置**: `index.js:456`（`updateStats` 中的 `detect()` 调用）
+
+`detect()` 返回所有匹配（包括重叠词），但 `highlightSensitiveWordsInDOM` 会跳过重叠匹配。如果用户通过 `addWords` 添加了重叠的词（如"最好" + "最"），状态栏显示 "2 个敏感词" 但预览中只高亮 1 处。建议在 `detect()` 中加重叠过滤，或统一两处的重叠处理逻辑。
+
+#### 2. `sensitive-words.js` 内部使用 `var`，与项目 ES6+ 风格不一致
+**位置**: `sensitive-words.js:2-11`
+
+项目中 `index.js` 主要使用 `const`/`let`（新代码也是），但 `sensitive-words.js` 全部使用 `var`。建议统一为 `const`/`let`。
+
+#### 3. `addWords`/`removeWords` 缺少参数类型校验
+`addWords(null)` 会将 `null` 作为合法词加入词库。建议加 `typeof` 前置检查。
+
+### 建议改进 (可选)
+- 考虑在输入 `input` 事件中加入防抖（`requestAnimationFrame` 或 `debounce`），避免每次按键都全量重扫 DOM
+- 敏感词列表可从外部扩展（当前为硬编码），后续可考虑从 URL 或用户配置加载
+
+### 审核结论
+- [ ] 通过 — 评分 88 ≥ 85，进入人工审核阶段
+
+### 实现者自检确认
+- [x] 实现者已执行编译/类型检查（N/A - 纯 JS）
+- [x] 实现者已执行 Lint 检查
+- [ ] 实现者已运行相关测试（N/A - 无测试基础设施）
+- [ ] 实现者已确认测试覆盖（N/A - 无测试基础设施）
+
+---
+
+## Learnings
+
+- **模式**: 纯前端项目中，功能完整性验证必须追踪完整链路：HTML 元素 → 事件绑定 → 回调函数 → state 更新 → UI 同步 → init 初始化。缺失任一环节就是功能性缺陷。
+- **踩坑**: `sensitive-words.js` 的 IIFE + `window.SensitiveWords` 导出模式依赖脚本加载顺序（`sensitive-words.js` 必须在 `index.js` 之前加载），HTML 中 `script` 标签顺序正确但这是一个易碎的隐式依赖。
+- **经验**: `sensitive-words.js` 的核心 `detect()` 和 `highlightSensitiveWordsInDOM` 有重叠的去重逻辑（`seen` 对象 vs `lastIndex` 游标），两处不一致会出现计数偏差。多次迭代都没有发现这个隐藏的不一致，审核时需要对重叠词场景做心理追踪推演。
