@@ -405,11 +405,11 @@
       console.warn('processImageProtocol', e);
     }
     const box = document.getElementById('preview-content');
-    // 网页预览模式下，将 section 的 maxWidth 替换为更宽的值
-    if (state.editorPaneCollapsed) {
-      html = html.replace(/max-width:\d+px/, 'max-width:900px');
-    }
     if (box) box.innerHTML = html;
+    if (state.editorPaneCollapsed && box) {
+      const section = box.querySelector('section');
+      if (section) section.style.padding = '20px 0';
+    }
     if (state.sensitiveWordsEnabled && sensitiveDetector && box) {
       highlightSensitiveWordsInDOM(box);
     }
@@ -424,10 +424,9 @@
   }
 
   function applyPreviewBg() {
-    const frame = document.querySelector('.preview-frame');
-    if (frame && state.settings.global && state.settings.global.bg) {
-      frame.style.background = state.settings.global.bg;
-    }
+    const bg = (state.settings.global && state.settings.global.bg) || '';
+    const content = document.getElementById('preview-content');
+    if (content) content.style.background = bg;
   }
 
   function updateMeta() {

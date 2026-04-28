@@ -451,7 +451,7 @@ body {
 .preview-frame {
   width: 375px;
   min-height: 500px;
-  background: white;
+  background: transparent;
   border-radius: 14px;
   box-shadow:
     0 1px 2px rgba(15, 23, 42, 0.04),
@@ -507,7 +507,6 @@ body {
 #preview-scroll-root::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 4px; }
 #preview-scroll-root::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
 #preview-content {
-  padding: 16px 16px 40px;
   font-size: 16px;
 }
 #preview-content > *:first-child { margin-top: 0 !important; }
@@ -906,11 +905,9 @@ input[type="text"].txt:focus, select.txt:focus { border-color: var(--brand); }
   .preview-phone-bar,
   .preview-article-meta { display: none !important; }
   #preview-scroll-root {
-    background: white !important;
     overflow: visible !important;
   }
   #preview-content {
-    padding: 20px 0 !important;
   }
   /* 确保代码块不被截断 */
   #preview-content pre {
