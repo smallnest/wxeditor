@@ -408,7 +408,7 @@
     if (box) box.innerHTML = html;
     if (state.editorPaneCollapsed && box) {
       const section = box.querySelector('section');
-      if (section) section.style.padding = '20px 0';
+      if (section) section.style.padding = '20px 20px';
     }
     if (state.sensitiveWordsEnabled && sensitiveDetector && box) {
       highlightSensitiveWordsInDOM(box);
